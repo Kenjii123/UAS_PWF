@@ -1,0 +1,314 @@
+{% extends "base.html" %}
+{% block title %}Rekomendasi Khusus Untuk Anda - CineMind AI{% endblock %}
+
+{% block content %}
+<!-- HERO SECTION HALAMAN UNTUK ANDA (TANPA KARTU SAMPING) -->
+<section class="hero-banner hero-banner-sub">
+    <div class="hero-bg-backdrop" style="background-image: url('https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg');"></div>
+
+    <div class="hero-flex hero-flex-single">
+        <div>
+            <div class="hero-badges-row">
+                <span class="badge-top10">PERSONALIZED CBF</span>
+                <span class="account-context-badge">Profil Akun &bull; @{{ current_user.username }}</span>
+            </div>
+
+            <h1 class="hero-title">Rekomendasi Khusus <span class="highlight-red">{{ current_user.nama_lengkap }}</span></h1>
+
+            <div class="hero-meta">
+                <span class="worth-pill">{{ by_favorites.count_source }} Film Favorit</span>
+                <span class="age-badge">{{ by_history.count_source }} Riwayat Overview</span>
+                <span class="rec-badge-top" style="margin-bottom: 0; font-size: 0.84rem; padding: 3px 10px;">
+                    {{ (by_favorites.recommendations | length) + (by_history.recommendations | length) }} Film Personal
+                </span>
+            </div>
+
+            <div class="hero-overview-box">
+                <span class="overview-label">DUA PROFIL SELERA CBF PER AKUN</span>
+                <p class="hero-desc">
+                    Halaman ini memisahkan rekomendasi personal Anda menjadi dua baris <em>carousel looping</em>: baris pertama dibentuk dari <strong>User Profile Vector 461-Dim</strong> daftar film favorit Anda, dan baris kedua dari <strong>profil semantik Sentence-BERT</strong> riwayat pencarian <em>overview</em> terbaru.
+                </p>
+            </div>
+
+            <div class="hero-buttons">
+                <a href="#baris-favorit" class="btn-play">&#9829; Berdasarkan Favorit</a>
+                <a href="#baris-overview" class="btn-imdb-hero">&#128269; Berdasarkan Overview</a>
+                <a href="/cari" class="btn-info">+ Tambah Favorit</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-container">
+    <!-- =========================================================
+         BARIS 1: REKOMENDASI BERDASARKAN FILM FAVORIT (15 FILM)
+         ========================================================= -->
+    <div id="baris-favorit" class="personal-cbf-banner" style="margin-bottom: 32px;">
+        <div class="carousel-section-head">
+            <div>
+                <span class="rec-badge-top">USER PROFILE VECTOR 461-DIM &bull; BERDASARKAN FILM FAVORIT</span>
+                <h2 class="section-title" style="margin-bottom: 4px;">
+                    1. Karena Anda Memfavoritkan Film Pilihan Anda ({{ by_favorites.recommendations | length }} Film)
+                </h2>
+                <p class="section-subtitle" style="margin-bottom: 0;">{{ by_favorites.source_info }}</p>
+            </div>
+
+            {% if by_favorites.has_data %}
+            <div class="carousel-nav-controls">
+                <button type="button" class="carousel-arrow-btn" onclick="geserCarousel('carouselFavorites', -1)" aria-label="Geser Kiri">&#10094;</button>
+                <button type="button" class="carousel-arrow-btn" onclick="geserCarousel('carouselFavorites', 1)" aria-label="Geser Kanan">&#10095;</button>
+            </div>
+            {% endif %}
+        </div>
+
+        {% if by_favorites.has_data and by_favorites.recommendations | length > 0 %}
+        <div class="loop-carousel-viewport">
+            <div class="loop-carousel-track" id="carouselFavorites">
+                {% for film in by_favorites.recommendations %}
+                {% set is_fav = (film.names | lower) in favorite_titles %}
+                <article class="carousel-movie-card">
+                    <div>
+                        <div class="carousel-card-badges">
+                            <span class="rec-rank-pill">#{{ film.rank }}</span>
+                            <span class="rec-sim-badge" style="font-size: 0.74rem; padding: 3px 8px;">{{ film.similarity }}% Cocok</span>
+                            <span class="rec-imdb-badge" style="font-size: 0.74rem; padding: 3px 8px;">&#9733; {{ film.score }}/100</span>
+                        </div>
+
+                        <div class="catalog-poster-row">
+                            <div class="movie-poster-box poster-sm is-loading"
+                                 data-poster-title="{{ film.names }}"
+                                 data-poster-year="{{ film.release_year }}">
+                                <span class="poster-fallback-text">{{ film.names[:1] | upper }}</span>
+                            </div>
+
+                            <div class="catalog-poster-info">
+                                <h3 class="carousel-movie-title">{{ film.names }}</h3>
+                                <div class="carousel-movie-meta">
+                                    <strong>{{ film.release_year if film.release_year > 0 else film.date_x }}</strong> &bull; {{ film.genre }}
+                                </div>
+                                <p class="carousel-movie-desc">
+                                    {{ film.overview[:105] }}{% if film.overview | length > 105 %}...{% endif %}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="carousel-extra-detail" style="display: none;">
+                            <div style="margin-bottom: 5px;"><strong>Sinopsis Lengkap:</strong> {{ film.overview }}</div>
+                            <div><strong>Kru/Pemeran:</strong> {{ film.crew }}</div>
+                        </div>
+                    </div>
+
+                    <div class="catalog-card-actions">
+                        <button type="button"
+                                class="btn-fav {% if is_fav %}is-favorited{% endif %}"
+                                data-title="{{ film.names }}"
+                                onclick="toggleFavoritAjax(this)">
+                            {% if is_fav %}&#9829; Difavoritkan{% else %}&#9825; Favorit{% endif %}
+                        </button>
+                        <button type="button" class="btn-use-ref" style="padding: 6px 10px;" onclick="toggleCarouselDetail(this)">
+                            Detail
+                        </button>
+                        <button type="button"
+                                class="btn-similar-cbf"
+                                data-title="{{ film.names }}"
+                                onclick="bukaModalSerupa(this)">
+                            Serupa
+                        </button>
+                        <a href="https://www.imdb.com/find/?s=tt&q={{ film.names | urlencode }}"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="btn-imdb-card"
+                           style="padding: 6px 10px;">
+                            IMDb &nearr;
+                        </a>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-state-box" style="margin-top: 12px;">
+            <p style="margin-bottom: 12px;">Anda belum menandai film favorit. Buka katalog <strong>Cari Film</strong> dan klik <strong>&#9825; Favorit</strong> pada film kesukaan Anda untuk mengaktifkan baris ini.</p>
+            <a href="/cari" class="btn-play" style="display: inline-block; padding: 9px 18px;">Buka Katalog &amp; Pilih Favorit</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- =========================================================
+         BARIS 2: REKOMENDASI BERDASARKAN PENCARIAN OVERVIEW (15 FILM)
+         ========================================================= -->
+    <div id="baris-overview" class="personal-cbf-banner" style="margin-bottom: 32px; border-color: rgba(245, 197, 24, 0.35); background: linear-gradient(135deg, rgba(245, 197, 24, 0.08) 0%, #181818 65%);">
+        <div class="carousel-section-head">
+            <div>
+                <span class="rec-badge-top" style="background: rgba(245, 197, 24, 0.18); border-color: rgba(245, 197, 24, 0.5); color: var(--imdb-gold);">
+                    SEMANTIC OVERVIEW PROFILE &bull; BERDASARKAN PENCARIAN OVERVIEW
+                </span>
+                <h2 class="section-title" style="margin-bottom: 4px;">
+                    2. Berdasarkan Riwayat Pencarian Overview Anda ({{ by_history.recommendations | length }} Film)
+                </h2>
+                <p class="section-subtitle" style="margin-bottom: 0;">{{ by_history.source_info }}</p>
+            </div>
+
+            {% if by_history.has_data %}
+            <div class="carousel-nav-controls">
+                <button type="button" class="carousel-arrow-btn" onclick="geserCarousel('carouselHistory', -1)" aria-label="Geser Kiri">&#10094;</button>
+                <button type="button" class="carousel-arrow-btn" onclick="geserCarousel('carouselHistory', 1)" aria-label="Geser Kanan">&#10095;</button>
+            </div>
+            {% endif %}
+        </div>
+
+        {% if by_history.has_data and by_history.recommendations | length > 0 %}
+        <div class="loop-carousel-viewport">
+            <div class="loop-carousel-track" id="carouselHistory">
+                {% for film in by_history.recommendations %}
+                {% set is_fav = (film.names | lower) in favorite_titles %}
+                <article class="carousel-movie-card">
+                    <div>
+                        <div class="carousel-card-badges">
+                            <span class="rec-rank-pill">#{{ film.rank }}</span>
+                            <span class="rec-sim-badge" style="font-size: 0.74rem; padding: 3px 8px;">{{ film.similarity }}% Mirip</span>
+                            <span class="rec-imdb-badge" style="font-size: 0.74rem; padding: 3px 8px;">&#9733; {{ film.score }}/100</span>
+                        </div>
+
+                        <div class="catalog-poster-row">
+                            <div class="movie-poster-box poster-sm is-loading"
+                                 data-poster-title="{{ film.names }}"
+                                 data-poster-year="{{ film.release_year }}">
+                                <span class="poster-fallback-text">{{ film.names[:1] | upper }}</span>
+                            </div>
+
+                            <div class="catalog-poster-info">
+                                <h3 class="carousel-movie-title">{{ film.names }}</h3>
+                                <div class="carousel-movie-meta">
+                                    <strong>{{ film.release_year if film.release_year > 0 else film.date_x }}</strong> &bull; {{ film.genre }}
+                                </div>
+                                <p class="carousel-movie-desc">
+                                    {{ film.overview[:105] }}{% if film.overview | length > 105 %}...{% endif %}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="carousel-extra-detail" style="display: none;">
+                            <div style="margin-bottom: 5px;"><strong>Sinopsis Lengkap:</strong> {{ film.overview }}</div>
+                            <div><strong>Kru/Pemeran:</strong> {{ film.crew }}</div>
+                        </div>
+                    </div>
+
+                    <div class="catalog-card-actions">
+                        <button type="button"
+                                class="btn-fav {% if is_fav %}is-favorited{% endif %}"
+                                data-title="{{ film.names }}"
+                                onclick="toggleFavoritAjax(this)">
+                            {% if is_fav %}&#9829; Difavoritkan{% else %}&#9825; Favorit{% endif %}
+                        </button>
+                        <button type="button" class="btn-use-ref" style="padding: 6px 10px;" onclick="toggleCarouselDetail(this)">
+                            Detail
+                        </button>
+                        <button type="button"
+                                class="btn-similar-cbf"
+                                data-title="{{ film.names }}"
+                                onclick="bukaModalSerupa(this)">
+                            Serupa
+                        </button>
+                        <a href="https://www.imdb.com/find/?s=tt&q={{ film.names | urlencode }}"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="btn-imdb-card"
+                           style="padding: 6px 10px;">
+                            IMDb &nearr;
+                        </a>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-state-box" style="margin-top: 12px;">
+            <p style="margin-bottom: 12px;">Anda belum memiliki riwayat pencarian sinopsis. Coba cari film lewat deskripsi cerita di halaman <strong>Prediksi AI</strong> agar baris ini terisi otomatis.</p>
+            <a href="/prediksi" class="btn-play" style="display: inline-block; padding: 9px 18px;">Mulai Prediksi AI</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- =========================================================
+         RINGKASAN PROFIL SELERA AKUN (DIPINDAHKAN KE BAWAH BARIS 2)
+         ========================================================= -->
+    <div id="ringkasan-profil" class="profile-summary-wide-card">
+        <div class="profile-summary-header">
+            <span class="hero-side-label">RINGKASAN PROFIL SELERA AKUN</span>
+            <h3 class="hero-side-title" style="margin-bottom: 0;">Status Personalisasi {{ current_user.nama_lengkap }}</h3>
+        </div>
+
+        <div class="profile-summary-grid">
+            <!-- KIRI: STATISTIK & GENRE DOMINAN -->
+            <div class="acc-info-kv" style="margin-bottom: 0;">
+                <div class="kv-row">
+                    <span>Basis Favorit</span>
+                    <strong>{{ by_favorites.count_source }} Film</strong>
+                </div>
+                <div class="kv-row">
+                    <span>Basis Overview</span>
+                    <strong>{{ by_history.count_source }} Pencarian</strong>
+                </div>
+                <div class="kv-row">
+                    <span>Genre Dominan (Favorit)</span>
+                    <strong style="color: var(--imdb-gold); text-align: right;">
+                        {{ by_favorites.top_genres | join(', ') if by_favorites.top_genres else 'Belum Terbentuk' }}
+                    </strong>
+                </div>
+                <div class="kv-row">
+                    <span>Genre Dominan (Overview)</span>
+                    <strong style="color: var(--imdb-gold); text-align: right;">
+                        {{ by_history.top_genres | join(', ') if by_history.top_genres else 'Belum Terbentuk' }}
+                    </strong>
+                </div>
+            </div>
+
+            <!-- KANAN: DUA RINGKASAN TOP #1 (FAVORIT & PENCARIAN OVERVIEW) -->
+            <div class="top-picks-dual-grid">
+                <!-- TOP #1 BERDASARKAN FAVORIT -->
+                {% if by_favorites.has_data and by_favorites.recommendations | length > 0 %}
+                {% set top_fav = by_favorites.recommendations[0] %}
+                <div class="hero-top-pick-box top-pick-card">
+                    <span class="top-pick-tag tag-fav">
+                        TOP #1 BERDASARKAN FAVORIT ({{ top_fav.similarity }}% COCOK)
+                    </span>
+                    <div class="top-pick-title">{{ top_fav.names }}</div>
+                    <div class="top-pick-meta">
+                        &#9733; {{ top_fav.score }}/100 &bull; {{ top_fav.genre }}
+                    </div>
+                </div>
+                {% else %}
+                <div class="hero-top-pick-box top-pick-card">
+                    <span class="top-pick-tag tag-fav">TOP #1 BERDASARKAN FAVORIT</span>
+                    <div class="top-pick-empty">
+                        Tandai minimal 1 film sebagai <strong>&#9829; Favorit</strong> di halaman Cari Film untuk menampilkan rekomendasi utama dari favorit Anda.
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- TOP #1 BERDASARKAN PENCARIAN OVERVIEW -->
+                {% if by_history.has_data and by_history.recommendations | length > 0 %}
+                {% set top_hist = by_history.recommendations[0] %}
+                <div class="hero-top-pick-box top-pick-card top-pick-overview">
+                    <span class="top-pick-tag tag-overview">
+                        TOP #1 BERDASARKAN OVERVIEW ({{ top_hist.similarity }}% MIRIP)
+                    </span>
+                    <div class="top-pick-title">{{ top_hist.names }}</div>
+                    <div class="top-pick-meta">
+                        &#9733; {{ top_hist.score }}/100 &bull; {{ top_hist.genre }}
+                    </div>
+                </div>
+                {% else %}
+                <div class="hero-top-pick-box top-pick-card top-pick-overview">
+                    <span class="top-pick-tag tag-overview">TOP #1 BERDASARKAN OVERVIEW</span>
+                    <div class="top-pick-empty">
+                        Lakukan minimal 1 pencarian sinopsis di halaman <strong>Prediksi AI</strong> untuk menampilkan rekomendasi utama dari riwayat overview Anda.
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

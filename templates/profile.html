@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block title %}Profil Akun & Favorit CBF - CineMind AI{% endblock %}
+
+{% block content %}
+<section class="section-container">
+    <div class="acc-dashboard-hero">
+        <div class="acc-hero-left">
+            <div class="acc-hero-avatar">{{ current_user.nama_lengkap[0] | upper }}</div>
+            <div>
+                <span class="acc-member-badge">&#9679; MEMBER AKTIF CINEMIND AI</span>
+                <h1 class="acc-hero-title">{{ current_user.nama_lengkap }}</h1>
+                <p class="acc-hero-sub">
+                    @{{ current_user.username }} &bull; {{ current_user.email }} &bull; Terdaftar: {{ current_user.waktu_daftar }} &bull; <strong>{{ favorites | length }} Film Favorit</strong>
+                </p>
+            </div>
+        </div>
+        <div class="acc-hero-actions" style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <a href="/cari" class="btn-imdb-hero" style="padding: 10px 16px;">Cari Film</a>
+            <a href="/prediksi" class="btn-play" style="padding: 10px 16px;">Prediksi AI</a>
+            <a href="/auth/logout" class="btn-logout-hero">Keluar (Logout)</a>
+        </div>
+    </div>
+
+    {% if profile_msg %}
+    <div class="alert-banner {% if profile_ok %}alert-success{% else %}alert-error{% endif %}" style="margin-top: 20px;">
+        {{ profile_msg }}
+    </div>
+    {% endif %}
+
+    <div class="acc-maintenance-grid">
+        <!-- INFORMASI AKUN -->
+        <div class="acc-maint-card">
+            <div class="maint-card-head">
+                <div>
+                    <h3>Informasi Akun Terdaftar</h3>
+                    <small>Data identitas akun Anda di database PostgreSQL</small>
+                </div>
+            </div>
+            <div class="acc-info-kv">
+                <div class="kv-row">
+                    <span>ID Akun Database</span>
+                    <strong>#{{ current_user.id }}</strong>
+                </div>
+                <div class="kv-row">
+                    <span>Nama Lengkap</span>
+                    <strong>{{ current_user.nama_lengkap }}</strong>
+                </div>
+                <div class="kv-row">
+                    <span>Username (Tetap)</span>
+                    <strong>@{{ current_user.username }}</strong>
+                </div>
+                <div class="kv-row">
+                    <span>Email Aktif</span>
+                    <strong>{{ current_user.email }}</strong>
+                </div>
+                <div class="kv-row">
+                    <span>Total Film Favorit (Basis CBF)</span>
+                    <strong style="color: var(--imdb-gold);">{{ favorites | length }} Film</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- EDIT PROFIL -->
+        <div class="acc-maint-card">
+            <div class="maint-card-head">
+                <div>
+                    <h3>Perbarui Profil &amp; Password</h3>
+                    <small>Ubah nama tampilan, alamat email, atau password akun Anda</small>
+                </div>
+            </div>
+            <form action="/profile/update" method="POST" class="netflix-form">
+                <div class="form-group">
+                    <label>Nama Lengkap</label>
+                    <input type="text" name="nama_lengkap" value="{{ current_user.nama_lengkap }}" required>
+                </div>
+                <div class="form-group">
+                    <label>Alamat Email</label>
+                    <input type="email" name="email" value="{{ current_user.email }}" required>
+                </div>
+                <div class="form-group">
+                    <label>Password Baru (Kosongkan jika tidak ingin mengubah)</label>
+                    <input type="password" name="new_password" placeholder="Minimal 4 karakter">
+                </div>
+                <button type="submit" class="btn-play full-width">Simpan Perubahan Profil</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- DAFTAR FILM FAVORIT AKUN (USER PROFILE VECTOR CBF) -->
+    <div class="table-card" style="margin-top: 24px;">
+        <div class="table-header-bar">
+            <div>
+                <h2 class="section-title" style="margin-bottom: 4px;">
+                    &#9829; Daftar Film Favorit Anda ({{ favorites | length }} Film)
+                </h2>
+                <p style="font-size: 0.84rem; color: var(--text-muted);">
+                    Film-film di bawah ini digunakan oleh sistem <strong>Content-Based Filtering</strong> untuk menghitung <em>User Profile Vector</em> selera pribadi Anda.
+                </p>
+            </div>
+            <a href="/cari" class="btn-play" style="padding: 8px 16px;">+ Tambah Film Favorit</a>
+        </div>
+
+        {% if favorites | length > 0 %}
+        <div class="table-responsive">
+            <table class="netflix-table">
+                <thead>
+                    <tr>
+                        <th style="width: 55px;">No</th>
+                        <th>Judul Film</th>
+                        <th>Genre</th>
+                        <th style="width: 120px;">Rating IMDb</th>
+                        <th style="width: 150px;">Ditambahkan</th>
+                        <th style="width: 190px;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fav in favorites %}
+                    <tr>
+                        <td><strong>{{ loop.index }}</strong></td>
+                        <td>
+                            <strong style="color: var(--imdb-gold);">{{ fav.movie_title }}</strong>
+                            <small style="display: block; color: var(--text-muted);">Rilis: {{ fav.movie_date }}</small>
+                        </td>
+                        <td>{{ fav.movie_genre }}</td>
+                        <td><span class="rec-imdb-badge">&#9733; {{ fav.movie_score }}/100</span></td>
+                        <td style="font-size: 0.82rem; color: var(--text-muted);">{{ fav.waktu_favorit }}</td>
+                        <td>
+                            <div style="display: flex; gap: 6px; align-items: center;">
+                                <button type="button" class="btn-similar-cbf" style="padding: 5px 9px;" data-title="{{ fav.movie_title }}" onclick="bukaModalSerupa(this)">
+                                    Serupa
+                                </button>
+                                <form action="/favorit/delete/{{ fav.id }}" method="POST" style="margin: 0;">
+                                    <button type="submit" class="btn-delete" style="width: auto; padding: 5px 10px;">Hapus</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state-box">
+            Anda belum menandai film favorit. Buka halaman <a href="/cari" style="color: var(--imdb-gold); font-weight: 700;">Cari Film</a> dan klik tombol <strong>&#9825; Favorit</strong> pada film kesukaan Anda.
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

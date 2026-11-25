@@ -1,0 +1,433 @@
+{% extends "base.html" %}
+{% block title %}Cari & Filter Film - CineMind AI{% endblock %}
+
+{% block content %}
+<!-- HERO SECTION HALAMAN CARI FILM -->
+<section class="hero-banner hero-banner-sub">
+    <div class="hero-bg-backdrop" style="background-image: url('https://image.tmdb.org/t/p/w500/uGBVj3bEbCoZbDjjl9wTxcygko1.jpg');"></div>
+
+    <div class="hero-flex">
+        <div>
+            <div class="hero-badges-row">
+                <span class="badge-top10">KATALOG IMDB MULTI-FILTER</span>
+                <span class="account-context-badge">Item-to-Item CBF (461-Dim)</span>
+            </div>
+
+            <h1 class="hero-title">Jelajah &amp; Cari <span class="highlight-red">Film</span> IMDb</h1>
+
+            <div class="hero-meta">
+                <span class="worth-pill">{{ total_results }} Film Tersedia</span>
+                <span class="age-badge">{{ all_genres | length }} Genre Asli IMDb</span>
+                <span class="rec-badge-top" style="margin-bottom: 0; font-size: 0.84rem; padding: 3px 10px;">
+                    Halaman {{ current_page }} / {{ total_pages }}
+                </span>
+            </div>
+
+            <div class="hero-overview-box">
+                <span class="overview-label">PENCARIAN KATALOG &amp; ITEM-TO-ITEM CBF</span>
+                <p class="hero-desc">
+                    Temukan film berdasarkan <strong>judul, aktor/kru, atau kata kunci cerita</strong> dengan kombinasi 5 filter sekaligus. Klik <strong>&#9829; Favorit</strong> untuk memperbarui profil selera akun Anda, atau klik <strong>Serupa (CBF)</strong> untuk mencari 10 film paling mirip dengan film pilihan.
+                </p>
+            </div>
+
+            <div class="hero-buttons">
+                <a href="#panel-filter" class="btn-play">&#128269; Mulai Filter Katalog</a>
+                <a href="/prediksi" class="btn-imdb-hero" onclick="return cekAksesPrediksi(event)">&#9654; Cari via Sinopsis AI</a>
+                <a href="/untuk-anda" class="btn-info" onclick="return cekAksesPrediksi(event)">&#9829; Untuk Anda</a>
+            </div>
+        </div>
+
+        <!-- KARTU KANAN: FILTER CEPAT GENRE POPULER -->
+        <div class="hero-side-card">
+            <span class="hero-side-label">AKSES CEPAT FILTER GENRE</span>
+            <h3 class="hero-side-title">Pilih Genre untuk Langsung Menyaring</h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; line-height: 1.45;">
+                Klik salah satu genre asli IMDb di bawah ini untuk langsung menampilkan katalog film pada genre tersebut:
+            </p>
+
+            <div class="hero-quick-genre-grid">
+                <a href="/cari#panel-filter" class="hero-genre-chip {% if not filters.genres %}active{% endif %}">Semua</a>
+                {% for g in all_genres %}
+                <a href="/cari?genre={{ g | urlencode }}#panel-filter"
+                   class="hero-genre-chip {% if g in filters.genres %}active{% endif %}">
+                    {{ g }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-container">
+    <!-- PANEL FILTER MULTI-KRITERIA (TERPISAH DARI GRID FILM) -->
+    <div id="panel-filter" class="filter-panel-card">
+        <form action="/cari" method="GET" class="netflix-form">
+            <div class="filter-grid-controls">
+                <!-- KOLOM 1: KATA KUNCI -->
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="q">Kata Kunci (Judul, Aktor, atau Cerita)</label>
+                    <input type="text" id="q" name="q" value="{{ filters.q }}" placeholder="Contoh: Spider-Man, Christopher Nolan, zombie...">
+                </div>
+
+                <!-- KOLOM 2: FILTER GENRE (MULTI-PILIH) -->
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Filter Genre</label>
+                    <div class="multi-select-dropdown" id="genreMultiDropdown">
+                        <button type="button"
+                                class="multi-select-trigger"
+                                id="genreDropdownBtn"
+                                onclick="toggleCustomDropdown(event, 'genreMultiDropdown')">
+                            <span id="genreTriggerText">
+                                {% if filters.genres | length == 0 %}
+                                    Semua Genre ({{ all_genres | length }})
+                                {% elif filters.genres | length <= 2 %}
+                                    {{ filters.genres | join(', ') }}
+                                {% else %}
+                                    {{ filters.genres[:2] | join(', ') }} (+{{ (filters.genres | length) - 2 }})
+                                {% endif %}
+                            </span>
+                            <span class="multi-select-arrow" aria-hidden="true">
+                                <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </button>
+
+                        <div class="multi-select-menu" id="genreDropdownMenu" onclick="event.stopPropagation()">
+                            <div class="multi-select-menu-head">
+                                <span>Pilih 1 atau lebih genre</span>
+                                <button type="button" class="btn-clear-genre" onclick="clearGenreSelection()">Reset</button>
+                            </div>
+                            <div class="multi-select-options">
+                                {% for g in all_genres %}
+                                <label class="multi-select-option">
+                                    <input type="checkbox"
+                                           name="genre"
+                                           value="{{ g }}"
+                                           {% if g in filters.genres %}checked{% endif %}
+                                           onchange="updateGenreTriggerLabel()">
+                                    <span>{{ g }}</span>
+                                </label>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KOLOM 3: FILTER TAHUN RILIS -->
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Filter Tahun Rilis</label>
+                    <input type="hidden" id="year_range" name="year_range" value="{{ filters.year_range }}">
+                    <div class="multi-select-dropdown" id="yearDropdown">
+                        <button type="button"
+                                class="multi-select-trigger"
+                                onclick="toggleCustomDropdown(event, 'yearDropdown')">
+                            <span class="dropdown-trigger-text" id="yearTriggerText">
+                                {% if filters.year_range == '2020_plus' %}2020 - Sekarang
+                                {% elif filters.year_range == '2010_2019' %}2010 - 2019
+                                {% elif filters.year_range == '2000_2009' %}2000 - 2009
+                                {% elif filters.year_range == 'before_2000' %}Sebelum 2000
+                                {% else %}Semua Tahun{% endif %}
+                            </span>
+                            <span class="multi-select-arrow" aria-hidden="true">
+                                <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </button>
+
+                        <div class="multi-select-menu single-select-menu" onclick="event.stopPropagation()">
+                            <div class="multi-select-options">
+                                <button type="button" class="single-select-option {% if filters.year_range == 'all' %}active{% endif %}" onclick="selectSingleDropdownOption('yearDropdown', 'year_range', 'yearTriggerText', 'all', 'Semua Tahun', this)">
+                                    <span>Semua Tahun</span><span class="single-check">&#10003;</span>
+                                </button>
+                                <button type="button" class="single-select-option {% if filters.year_range == '2020_plus' %}active{% endif %}" onclick="selectSingleDropdownOption('yearDropdown', 'year_range', 'yearTriggerText', '2020_plus', '2020 - Sekarang', this)">
+                                    <span>2020 - Sekarang</span><span class="single-check">&#10003;</span>
+                                </button>
+                                <button type="button" class="single-select-option {% if filters.year_range == '2010_2019' %}active{% endif %}" onclick="selectSingleDropdownOption('yearDropdown', 'year_range', 'yearTriggerText', '2010_2019', '2010 - 2019', this)">
+                                    <span>2010 - 2019</span><span class="single-check">&#10003;</span>
+                                </button>
+                                <button type="button" class="single-select-option {% if filters.year_range == '2000_2009' %}active{% endif %}" onclick="selectSingleDropdownOption('yearDropdown', 'year_range', 'yearTriggerText', '2000_2009', '2000 - 2009', this)">
+                                    <span>2000 - 2009</span><span class="single-check">&#10003;</span>
+                                </button>
+                                <button type="button" class="single-select-option {% if filters.year_range == 'before_2000' %}active{% endif %}" onclick="selectSingleDropdownOption('yearDropdown', 'year_range', 'yearTriggerText', 'before_2000', 'Sebelum 2000', this)">
+                                    <span>Sebelum 2000</span><span class="single-check">&#10003;</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KOLOM 4: MINIMAL RATING IMDB -->
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Minimal Rating IMDb</label>
+                    <input type="hidden" id="min_score" name="min_score" value="{{ filters.min_score | int }}">
+                    <div class="multi-select-dropdown" id="scoreDropdown">
+                        <button type="button"
+                                class="multi-select-trigger"
+                                onclick="toggleCustomDropdown(event, 'scoreDropdown')">
+                            <span class="dropdown-trigger-text" id="scoreTriggerText">
+                                {% if filters.min_score == 60 %}&ge; 60 / 100
+                                {% elif filters.min_score == 70 %}&ge; 70 / 100
+                                {% elif filters.min_score == 80 %}&ge; 80 / 100
+                                {% else %}Semua Rating{% endif %}
+                            </span>
+                            <span class="multi-select-arrow" aria-hidden="true">
+                                <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </button>
+
+                        <div class="multi-select-menu single-select-menu" onclick="event.stopPropagation()">
+                            <div class="multi-select-options">
+                                <button type="button" class="single-select-option {% if filters.min_score == 0 %}active{% endif %}" onclick="selectSingleDropdownOption('scoreDropdown', 'min_score', 'scoreTriggerText', '0', 'Semua Rating', this)">
+                                    <span>Semua Rating</span><span class="single-check">&#10003;</span>
+                                </button>
+                                <button type="button" class="single-select-option {% if filters.min_score == 60 %}active{% endif %}" onclick="selectSingleDropdownOption('scoreDropdown', 'min_score', 'scoreTriggerText', '60', '\u2265 60 / 100', this)">
+                                    <span>&ge; 60 / 100</span><span class="single-check">&#10003;</span>
+                                </button>
+                                <button type="button" class="single-select-option {% if filters.min_score == 70 %}active{% endif %}" onclick="selectSingleDropdownOption('scoreDropdown', 'min_score', 'scoreTriggerText', '70', '\u2265 70 / 100', this)">
+                                    <span>&ge; 70 / 100</span><span class="single-check">&#10003;</span>
+                                </button>
+                                <button type="button" class="single-select-option {% if filters.min_score == 80 %}active{% endif %}" onclick="selectSingleDropdownOption('scoreDropdown', 'min_score', 'scoreTriggerText', '80', '\u2265 80 / 100', this)">
+                                    <span>&ge; 80 / 100</span><span class="single-check">&#10003;</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KOLOM 5: URUTKAN KATALOG -->
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Urutkan Katalog</label>
+                    <input type="hidden" id="sort_by" name="sort_by" value="{{ filters.sort_by }}">
+                    <div class="multi-select-dropdown" id="sortDropdown">
+                        <button type="button"
+                                class="multi-select-trigger"
+                                onclick="toggleCustomDropdown(event, 'sortDropdown')">
+                            <span class="dropdown-trigger-text" id="sortTriggerText">
+                                {% if filters.sort_by == 'score_desc' %}Rating Tertinggi
+                                {% elif filters.sort_by == 'year_desc' %}Rilis Terbaru
+                                {% elif filters.sort_by == 'score_asc' %}Rating Terendah
+                                {% else %}Judul (A - Z){% endif %}
+                            </span>
+                            <span class="multi-select-arrow" aria-hidden="true">
+                                <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </button>
+
+                        <div class="multi-select-menu single-select-menu menu-align-right" onclick="event.stopPropagation()">
+                            <div class="multi-select-options">
+                                <button type="button" class="single-select-option {% if filters.sort_by == 'title_asc' %}active{% endif %}" onclick="selectSingleDropdownOption('sortDropdown', 'sort_by', 'sortTriggerText', 'title_asc', 'Judul (A - Z)', this)">
+                                    <span>Judul (A - Z)</span><span class="single-check">&#10003;</span>
+                                </button>
+                                <button type="button" class="single-select-option {% if filters.sort_by == 'score_desc' %}active{% endif %}" onclick="selectSingleDropdownOption('sortDropdown', 'sort_by', 'sortTriggerText', 'score_desc', 'Rating Tertinggi', this)">
+                                    <span>Rating Tertinggi</span><span class="single-check">&#10003;</span>
+                                </button>
+                                <button type="button" class="single-select-option {% if filters.sort_by == 'year_desc' %}active{% endif %}" onclick="selectSingleDropdownOption('sortDropdown', 'sort_by', 'sortTriggerText', 'year_desc', 'Rilis Terbaru', this)">
+                                    <span>Rilis Terbaru</span><span class="single-check">&#10003;</span>
+                                </button>
+                                <button type="button" class="single-select-option {% if filters.sort_by == 'score_asc' %}active{% endif %}" onclick="selectSingleDropdownOption('sortDropdown', 'sort_by', 'sortTriggerText', 'score_asc', 'Rating Terendah', this)">
+                                    <span>Rating Terendah</span><span class="single-check">&#10003;</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-panel-footer">
+                <div style="font-size: 0.86rem; color: var(--text-muted);">
+                    Ditemukan <strong style="color: var(--imdb-gold);">{{ total_results }}</strong> film (Halaman {{ current_page }} dari {{ total_pages }})
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <a href="/cari" class="btn-use-ref" style="text-decoration: none;">Reset Filter</a>
+                    <button type="submit" class="btn-play" style="padding: 8px 20px;">Terapkan Filter &amp; Cari</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- PANEL ITEM-TO-ITEM CBF (FALLBACK JIKA URL /cari?similar_to=... DIBUKA LANGSUNG) -->
+    {% if similar_target %}
+    <div class="table-card" style="margin-bottom: 28px; border-color: var(--netflix-red);">
+        <div class="rec-panel-header">
+            <div>
+                <span class="rec-badge-top">ITEM-TO-ITEM MULTI-FEATURE CBF (65% OVERVIEW + 25% GENRE + 10% KRU)</span>
+                <h2 class="section-title" style="margin-bottom: 4px;">
+                    Top 10 Film Paling Mirip dengan "{{ similar_target.names }}"
+                </h2>
+                <p class="rec-query-preview">
+                    <strong>Genre Acuan:</strong> {{ similar_target.genre }} &bull; <strong>Rating IMDb:</strong> {{ similar_target.score }}/100
+                </p>
+            </div>
+            <div>
+                <a href="/cari" class="btn-use-ref" style="text-decoration: none;">Tutup Panel Serupa &times;</a>
+            </div>
+        </div>
+
+        <div class="rec-results-grid">
+            {% for film in similar_movies %}
+            {% set is_fav = (film.names | lower) in favorite_titles %}
+            <div class="rec-item-card">
+                <div class="rec-rank-col">
+                    <div class="rec-rank-badge">#{{ film.rank }}</div>
+                </div>
+                <div class="movie-poster-box poster-rec is-loading"
+                     data-poster-title="{{ film.names }}"
+                     data-poster-year="{{ film.release_year | default(0) }}">
+                    <span class="poster-fallback-text">{{ film.names[:1] | upper }}</span>
+                </div>
+                <div class="rec-body-col">
+                    <div class="rec-title-row">
+                        <div>
+                            <h4 class="rec-movie-title">
+                                {{ film.names }} <span class="rec-year">({{ film.date_x }})</span>
+                            </h4>
+                            <span class="rec-genre-tag">Genre: {{ film.genre }}</span>
+                        </div>
+                        <div class="rec-metrics-group">
+                            <span class="rec-sim-badge">Kemiripan CBF: {{ film.similarity }}%</span>
+                            <span class="rec-imdb-badge">&#9733; IMDb {{ film.score }}/100</span>
+                        </div>
+                    </div>
+
+                    <div class="sim-progress-wrap">
+                        <div class="sim-progress-bar" data-width="{{ film.similarity }}"></div>
+                    </div>
+
+                    <p class="rec-overview-desc">{{ film.overview }}</p>
+
+                    <div class="rec-actions-footer" style="justify-content: flex-start; gap: 8px;">
+                        <button type="button"
+                                class="btn-fav {% if is_fav %}is-favorited{% endif %}"
+                                data-title="{{ film.names }}"
+                                onclick="toggleFavoritAjax(this)">
+                            {% if is_fav %}&#9829; Difavoritkan{% else %}&#9825; Favorit{% endif %}
+                        </button>
+                        <button type="button"
+                                class="btn-similar-cbf"
+                                data-title="{{ film.names }}"
+                                onclick="bukaModalSerupa(this)">
+                            Serupa (CBF)
+                        </button>
+                        <a href="https://www.imdb.com/find/?s=tt&q={{ film.names | urlencode }}"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="btn-imdb-card">
+                            &#9733; Buka IMDb &nearr;
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- HASIL KATALOG FILM DENGAN POSTER LAZY-LOAD -->
+    {% if movies | length > 0 %}
+    <div class="catalog-grid">
+        {% for film in movies %}
+        {% set is_fav = (film.names | lower) in favorite_titles %}
+        <div class="catalog-movie-card">
+            <div>
+                <div class="catalog-poster-row">
+                    <div class="movie-poster-box poster-sm is-loading"
+                         data-poster-title="{{ film.names }}"
+                         data-poster-year="{{ film.release_year }}">
+                        <span class="poster-fallback-text">{{ film.names[:1] | upper }}</span>
+                    </div>
+
+                    <div class="catalog-poster-info">
+                        <div class="catalog-card-top">
+                            <h3 style="font-size: 1.04rem; color: #fff; line-height: 1.3;">
+                                {{ film.names }}
+                            </h3>
+                            <span class="rec-imdb-badge" style="flex-shrink: 0; font-size: 0.74rem; padding: 3px 7px;">
+                                &#9733; {{ film.score }}
+                            </span>
+                        </div>
+
+                        <div style="font-size: 0.77rem; color: var(--text-muted); margin: 5px 0 8px;">
+                            <strong>{{ film.release_year if film.release_year > 0 else film.date_x }}</strong> &bull; {{ film.genre }}
+                        </div>
+
+                        <p style="font-size: 0.81rem; color: #d1d5db; line-height: 1.48; margin-bottom: 8px;">
+                            {{ film.overview[:130] }}{% if film.overview | length > 130 %}...{% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <div id="cat-detail-{{ loop.index }}" style="display: none; background: #121212; border: 1px solid #2e2e2e; border-radius: 6px; padding: 10px; margin-top: 8px; margin-bottom: 6px; font-size: 0.8rem; color: #cbd5e1;">
+                    <div style="margin-bottom: 6px;"><strong>Sinopsis Lengkap:</strong> {{ film.overview }}</div>
+                    <div style="margin-bottom: 4px;"><strong>Pemeran / Kru:</strong> {{ film.crew }}</div>
+                    <div><strong>Rilis / Bahasa / Negara:</strong> {{ film.date_x }} | {{ film.orig_lang }} ({{ film.country }})</div>
+                </div>
+            </div>
+
+            <div class="catalog-card-actions">
+                <button type="button"
+                        class="btn-fav {% if is_fav %}is-favorited{% endif %}"
+                        data-title="{{ film.names }}"
+                        onclick="toggleFavoritAjax(this)">
+                    {% if is_fav %}&#9829; Difavoritkan{% else %}&#9825; Favorit{% endif %}
+                </button>
+
+                <button type="button"
+                        class="btn-similar-cbf"
+                        data-title="{{ film.names }}"
+                        onclick="bukaModalSerupa(this)">
+                    Serupa (CBF)
+                </button>
+
+                <button type="button" class="btn-use-ref" onclick="toggleDetail('cat-detail-{{ loop.index }}')">
+                    Detail
+                </button>
+
+                <a href="https://www.imdb.com/find/?s=tt&q={{ film.names | urlencode }}"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="btn-imdb-card"
+                   style="padding: 6px 10px;">
+                    IMDb &nearr;
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- PAGINASI KATALOG -->
+    {% if total_pages > 1 %}
+    {% set genre_qs %}{% for g in filters.genres %}&genre={{ g | urlencode }}{% endfor %}{% endset %}
+    <div class="pagination-bar">
+        {% if current_page > 1 %}
+        <a class="page-btn" href="/cari?q={{ filters.q | urlencode }}{{ genre_qs }}&year_range={{ filters.year_range }}&min_score={{ filters.min_score }}&sort_by={{ filters.sort_by }}&page={{ current_page - 1 }}">
+            &laquo; Sebelumnya
+        </a>
+        {% endif %}
+
+        <span style="font-size: 0.9rem; color: var(--text-muted);">
+            Halaman <strong style="color: #fff;">{{ current_page }}</strong> dari <strong>{{ total_pages }}</strong>
+        </span>
+
+        {% if current_page < total_pages %}
+        <a class="page-btn" href="/cari?q={{ filters.q | urlencode }}{{ genre_qs }}&year_range={{ filters.year_range }}&min_score={{ filters.min_score }}&sort_by={{ filters.sort_by }}&page={{ current_page + 1 }}">
+            Berikutnya &raquo;
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="empty-state-box">
+        <h3 style="color: #fff; margin-bottom: 8px;">Film Tidak Ditemukan</h3>
+        <p style="margin-bottom: 14px;">Tidak ada film yang cocok dengan kombinasi filter Anda saat ini.</p>
+        <a href="/cari" class="btn-play" style="display: inline-block;">Reset Semua Filter</a>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

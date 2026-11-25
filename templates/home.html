@@ -1,0 +1,426 @@
+{% extends "base.html" %}
+{% block title %}Home - CineMind AI Movie Recommendation{% endblock %}
+
+{% block content %}
+<!-- HERO BANNER DENGAN ANIMASI POSTER POPULER -->
+<section class="hero-banner">
+    <div id="heroDynamicBackdrop" class="hero-bg-backdrop" style="background-image: url('https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg');"></div>
+
+    <div class="hero-flex">
+        <div>
+            <div class="hero-badges-row">
+                <span class="badge-top10">CONTENT-BASED FILTERING (CBF)</span>
+                <span class="account-context-badge">Kategori Hiburan &bull; Personalized Movie Recommender</span>
+            </div>
+
+            <h1 class="hero-title">CineMind <span class="highlight-red">AI</span> Movie Recommender</h1>
+
+            <!-- BARIS METODE & ALGORITMA UTAMA -->
+            <div class="hero-meta">
+                <span class="worth-pill">Multi-Feature CBF (461-Dim)</span>
+                <span class="age-badge">Sentence-BERT &bull; 13 Genre</span>
+                <span class="rec-badge-top" style="margin-bottom: 0; font-size: 0.84rem; padding: 3px 10px;">PostgreSQL &bull; TMDB API Cache</span>
+            </div>
+
+            <div class="hero-overview-box">
+                <span class="overview-label">APA ITU CINEMIND AI?</span>
+                <p class="hero-desc">
+                    <strong>CineMind AI</strong> adalah platform web pencarian dan rekomendasi film berbasis <strong>Multi-Feature Content-Based Filtering (CBF)</strong> yang dibangun dengan <strong>FastAPI</strong>, <strong>PostgreSQL</strong>, dan <strong>TMDB API</strong>. Cukup tuliskan gambaran alur cerita, saring katalog IMDb, atau tandai film favorit&mdash;sistem membentuk profil selera tiap akun secara otomatis untuk menyajikan rekomendasi yang relevan dan personal.
+                </p>
+            </div>
+
+            <div class="hero-buttons">
+                <a href="/untuk-anda" class="btn-play" onclick="return cekAksesPrediksi(event)">&#9829; Rekomendasi Untuk Anda</a>
+                <a href="/prediksi" class="btn-imdb-hero" onclick="return cekAksesPrediksi(event)">&#9654; Prediksi AI Sinopsis</a>
+                <a href="/cari" class="btn-info">&#128269; Jelajah &amp; Filter Film</a>
+            </div>
+        </div>
+
+        <!-- Animasi Pergantian Poster Film Populer -->
+        <div class="hero-poster-wrap">
+            <div class="poster-stage" id="posterCarousel">
+                <div class="poster-slide active" data-bg="https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg">
+                    <img src="https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg" alt="Interstellar">
+                    <span class="poster-badge-rating">&#9733; 8.7 IMDb</span>
+                    <span class="poster-badge-hd">POPULER</span>
+                    <div class="poster-overlay-info">
+                        <div class="poster-movie-title">Interstellar (2014)</div>
+                        <div class="poster-movie-meta">Adventure, Drama, Sci-Fi</div>
+                    </div>
+                </div>
+                <div class="poster-slide" data-bg="https://image.tmdb.org/t/p/w500/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg">
+                    <img src="https://image.tmdb.org/t/p/w500/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg" alt="Spider-Man">
+                    <span class="poster-badge-rating">&#9733; 8.2 IMDb</span>
+                    <span class="poster-badge-hd">POPULER</span>
+                    <div class="poster-overlay-info">
+                        <div class="poster-movie-title">Spider-Man: No Way Home</div>
+                        <div class="poster-movie-meta">Action, Adventure, Sci-Fi</div>
+                    </div>
+                </div>
+                <div class="poster-slide" data-bg="https://image.tmdb.org/t/p/w500/kgwjIb2JDHRhNk13lmSxiClFjVk.jpg">
+                    <img src="https://image.tmdb.org/t/p/w500/kgwjIb2JDHRhNk13lmSxiClFjVk.jpg" alt="Frozen">
+                    <span class="poster-badge-rating">&#9733; 7.4 IMDb</span>
+                    <span class="poster-badge-hd">POPULER</span>
+                    <div class="poster-overlay-info">
+                        <div class="poster-movie-title">Frozen (2013)</div>
+                        <div class="poster-movie-meta">Animation, Family, Adventure</div>
+                    </div>
+                </div>
+                <div class="poster-slide" data-bg="https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg">
+                    <img src="https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg" alt="The Dark Knight">
+                    <span class="poster-badge-rating">&#9733; 9.0 IMDb</span>
+                    <span class="poster-badge-hd">POPULER</span>
+                    <div class="poster-overlay-info">
+                        <div class="poster-movie-title">The Dark Knight (2008)</div>
+                        <div class="poster-movie-meta">Action, Crime, Thriller</div>
+                    </div>
+                </div>
+                <div class="poster-slide" data-bg="https://image.tmdb.org/t/p/w500/uGBVj3bEbCoZbDjjl9wTxcygko1.jpg">
+                    <img src="https://image.tmdb.org/t/p/w500/uGBVj3bEbCoZbDjjl9wTxcygko1.jpg" alt="Doctor Strange">
+                    <span class="poster-badge-rating">&#9733; 7.5 IMDb</span>
+                    <span class="poster-badge-hd">POPULER</span>
+                    <div class="poster-overlay-info">
+                        <div class="poster-movie-title">Doctor Strange (2016)</div>
+                        <div class="poster-movie-meta">Action, Adventure, Fantasy</div>
+                    </div>
+                </div>
+            </div>
+            <div class="poster-dots">
+                <button type="button" class="poster-dot active" onclick="pilihPosterSlide(0)"></button>
+                <button type="button" class="poster-dot" onclick="pilihPosterSlide(1)"></button>
+                <button type="button" class="poster-dot" onclick="pilihPosterSlide(2)"></button>
+                <button type="button" class="poster-dot" onclick="pilihPosterSlide(3)"></button>
+                <button type="button" class="poster-dot" onclick="pilihPosterSlide(4)"></button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 1. TENTANG WEBSITE, FITUR UTAMA & KAPABILITAS INTERAKTIF -->
+<section class="section-container">
+    <div class="section-header-flex">
+        <div>
+            <h2 class="section-title">1. Tentang CineMind AI &amp; Fitur Utama Website</h2>
+            <p class="section-subtitle">Penjelasan fungsi utama website, alur navigasi antar halaman, serta fitur interaktif yang membantu pengguna memilih film secara cepat dan personal.</p>
+        </div>
+    </div>
+
+    <div class="info-card" style="margin-bottom: 18px;">
+        <h3>Tujuan Sistem &amp; Alur Kerja Aplikasi</h3>
+        <p style="font-size: 0.92rem; color: #d1d5db; line-height: 1.65;">
+            Penonton sering mengalami <em>Choice Overload</em> saat memilih tontonan dari ribuan judul atau ingin mencari film berdasarkan <strong>ingatan alur cerita</strong> tanpa hafal judulnya. <strong>CineMind AI</strong> menjawab kebutuhan tersebut melalui sistem rekomendasi <strong>Content-Based Filtering (CBF)</strong> yang menganalisis makna semantik sinopsis, <strong>{{ metrics.num_genres }} genre asli IMDb</strong>, serta metadata pemeran/kru, lalu menggabungkannya dengan preferensi masing-masing akun pengguna yang tersimpan terisolasi di <strong>PostgreSQL</strong>.
+        </p>
+
+        <div class="feature-guide-grid">
+            <div class="feature-guide-card">
+                <div>
+                    <span class="feature-step-tag">MENU 1 &bull; PERSONALISASI</span>
+                    <h4 style="color: #fff; font-size: 1.02rem; margin-bottom: 6px;">Untuk Anda (/untuk-anda)</h4>
+                    <p style="font-size: 0.82rem; color: #cbd5e1; line-height: 1.5;">
+                        Menyajikan Hero ringkasan selera akun (termasuk <em>Top #1 Pick</em>) serta <strong>2 baris <em>carousel looping</em> horizontal tanpa scrollbar</strong> (masing-masing <strong>15 film</strong>): Baris 1 berbasis <strong>Film Favorit</strong> dan Baris 2 berbasis <strong>Riwayat Pencarian Overview</strong>.
+                    </p>
+                </div>
+                <a href="/untuk-anda" class="btn-use-ref" style="text-decoration: none; text-align: center;" onclick="return cekAksesPrediksi(event)">Buka Untuk Anda &rarr;</a>
+            </div>
+
+            <div class="feature-guide-card">
+                <div>
+                    <span class="feature-step-tag">MENU 2 &bull; KATALOG FILTER</span>
+                    <h4 style="color: #fff; font-size: 1.02rem; margin-bottom: 6px;">Cari Film (/cari)</h4>
+                    <p style="font-size: 0.82rem; color: #cbd5e1; line-height: 1.5;">
+                        Menjelajahi <strong>{{ metrics.total_clean }} film IMDb</strong> dengan urutan bawaan <strong>Judul (A&ndash;Z)</strong>, akses cepat 13 genre di Hero, serta kombinasi 5 filter (Kata Kunci, Genre, Tahun Rilis, Min. Rating, Urutan) lengkap dengan paginasi.
+                    </p>
+                </div>
+                <a href="/cari" class="btn-use-ref" style="text-decoration: none; text-align: center;">Buka Cari Film &rarr;</a>
+            </div>
+
+            <div class="feature-guide-card">
+                <div>
+                    <span class="feature-step-tag">MENU 3 &bull; NLP SINOPSIS</span>
+                    <h4 style="color: #fff; font-size: 1.02rem; margin-bottom: 6px;">Prediksi AI (/prediksi)</h4>
+                    <p style="font-size: 0.82rem; color: #cbd5e1; line-height: 1.5;">
+                        Masukkan sinopsis berbahasa Inggris &rarr; AI memprediksi <strong>Multi-Label Genre Asli</strong>, menyajikan <strong>Top 10 film paling cocok</strong> (bisa diurutkan berdasar Kemiripan/Rating), dan mencatat riwayat CRUD per akun di PostgreSQL.
+                    </p>
+                </div>
+                <a href="/prediksi" class="btn-use-ref" style="text-decoration: none; text-align: center;" onclick="return cekAksesPrediksi(event)">Buka Prediksi AI &rarr;</a>
+            </div>
+
+            <div class="feature-guide-card">
+                <div>
+                    <span class="feature-step-tag">MENU 4 &bull; AKUN &amp; DB</span>
+                    <h4 style="color: #fff; font-size: 1.02rem; margin-bottom: 6px;">Profil Akun (/profile)</h4>
+                    <p style="font-size: 0.82rem; color: #cbd5e1; line-height: 1.5;">
+                        Autentikasi <em>Login/Register/Lupa Password</em> berbasis sesi serta pengelolaan daftar <strong>&#9829; Film Favorit</strong> per akun yang langsung memperbarui <em>User Profile Vector</em> pada halaman <strong>Untuk Anda</strong>.
+                    </p>
+                </div>
+                <a href="/profile" class="btn-use-ref" style="text-decoration: none; text-align: center;" onclick="return cekAksesPrediksi(event)">Kelola Profil &rarr;</a>
+            </div>
+        </div>
+
+        <div class="number-explain-box" style="margin-top: 18px;">
+            <div style="margin-bottom: 8px;">
+                <strong>Pop-Up Modal Film Serupa (Item-to-Item CBF di Semua Halaman):</strong>
+                Menekan tombol <strong>Serupa</strong> di halaman <em>Untuk Anda</em>, <em>Cari Film</em>, <em>Prediksi AI</em>, maupun <em>Profil</em> memanggil endpoint JSON <code>/api/serupa</code> dan menampilkan <strong>Top 10 film paling mirip</strong> langsung dalam jendela <em>pop-up modal</em> tanpa berpindah halaman (dapat ditelusuri berantai antar film serupa).
+            </div>
+            <div>
+                <strong>Poster Film Otomatis On-Demand (TMDB API + Local Cache):</strong>
+                Untuk menampilkan poster di seluruh {{ metrics.total_clean }} film tanpa membebani penyimpanan maupun waktu muat awal, aplikasi memakai <em>lazy-loading</em> (<code>IntersectionObserver</code> &rarr; <code>/api/poster</code>) yang hanya mengambil poster film yang terlihat di layar dari <strong>TMDB API</strong> dan menyimpannya otomatis ke <code>poster_cache.json</code> agar kunjungan berikutnya tampil instan.
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 2. SPESIFIKASI DATASET & PENJELASAN ANGKA DATA -->
+<section class="section-container" style="padding-top: 0;">
+    <div class="section-header-flex">
+        <div>
+            <h2 class="section-title">2. Spesifikasi Dataset IMDb &amp; Arti Angka Data</h2>
+            <p class="section-subtitle">Penjelasan sumber data film, proses pembersihan, dan makna setiap angka statistik dataset yang digunakan.</p>
+        </div>
+    </div>
+
+    <div class="info-grid">
+        <div class="info-card">
+            <h3>Statistik Dataset IMDb Movies (Kaggle)</h3>
+            <p style="font-size: 0.88rem; color: #ccc; margin-bottom: 12px;">
+                Ringkasan jumlah data sebelum dan sesudah proses <em>Data Cleaning</em> pada skrip pelatihan <code>train_model.py</code>:
+            </p>
+            <div class="metrics-badges">
+                <div class="metric-item">
+                    <span>Total Baris Awal CSV</span>
+                    <strong>{{ metrics.total_raw }}</strong>
+                    <span class="metric-explain-sub">Jumlah seluruh baris mentah pada file <code>imdb_movies.csv</code> sebelum tahap penyaringan.</span>
+                </div>
+                <div class="metric-item">
+                    <span>Film Bersih (Score &gt; 0)</span>
+                    <strong>{{ metrics.total_clean }}</strong>
+                    <span class="metric-explain-sub">Film valid siap pakai setelah hapus data kosong, duplikat, dan film tanpa rating (<code>0.0</code>).</span>
+                </div>
+                <div class="metric-item">
+                    <span>Data Train / Test (80:20)</span>
+                    <strong>{{ metrics.train_size }} / {{ metrics.test_size }}</strong>
+                    <span class="metric-explain-sub">80% ({{ metrics.train_size }} film) untuk melatih model AI, 20% ({{ metrics.test_size }} film) untuk pengujian objektif.</span>
+                </div>
+                <div class="metric-item">
+                    <span>Kelas Multi-Label Genre</span>
+                    <strong>{{ metrics.num_genres }} Genre Asli</strong>
+                    <span class="metric-explain-sub">Jumlah kategori genre independen yang dipelajari (1 film dapat memiliki lebih dari 1 genre).</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <h3>Penjelasan Detail Angka Dataset &amp; Daftar {{ metrics.num_genres }} Genre</h3>
+            <ul class="clean-list" style="margin-bottom: 12px;">
+                <li><strong>Pembersihan Data ({{ metrics.total_raw }} &rarr; {{ metrics.total_clean }} Film):</strong> Sistem menyaring data mentah CSV dengan menghapus baris bersinopsis/genre kosong, duplikasi judul+cerita, serta film belum rilis berskor <code>0.0</code> agar katalog dan hasil Top-10 tetap akurat.</li>
+                <li><strong>Pembagian 80% Train ({{ metrics.train_size }}) &amp; 20% Test ({{ metrics.test_size }}):</strong> Model dilatih pada {{ metrics.train_size }} film dan diuji pada {{ metrics.test_size }} film yang <em>belum pernah dilihat</em> sebelumnya agar hasil evaluasi objektif dan bebas hafalan.</li>
+                <li><strong>Klasifikasi {{ metrics.num_genres }} Genre Asli (Multi-Label):</strong> Setiap film pada IMDb umumnya memiliki lebih dari satu tema cerita, sehingga sistem menerapkan klasifikasi <em>multi-label</em> independen pada {{ metrics.num_genres }} genre asli agar kombinasi genre (seperti <em>Horror + Thriller</em> atau <em>Action + Science Fiction</em>) dapat diprediksi secara bersamaan dan presisi.</li>
+                <li><strong>Skala Rating Film (0&ndash;100):</strong> Nilai skor pada katalog (misal <code>73.0/100</code>) mengikuti format persentase asli kolom <code>score</code> dari dataset Kaggle IMDb (setara <code>7.3/10</code>).</li>
+            </ul>
+
+            {% if metrics.genres_list %}
+            <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 8px;">
+                <strong style="color: #fff;">Daftar {{ metrics.num_genres }} Genre Asli yang Didukung:</strong>
+                <div class="genre-pill-list">
+                    {% for g in metrics.genres_list %}
+                    <span class="genre-mini-pill">{{ g }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- 3. ARSITEKTUR 5 TAHAP SISTEM (AI CBF, PERSONALISASI POSTGRESQL, & TMDB API) -->
+<section class="section-container" style="padding-top: 0;">
+    <div class="section-header-flex">
+        <div>
+            <h2 class="section-title">3. Arsitektur 5 Tahap Sistem &amp; Arti Angka Teknis</h2>
+            <p class="section-subtitle">Penjelasan alur kerja AI Content-Based Filtering, database personalisasi PostgreSQL, mekanisme pop-up CBF, serta optimasi poster TMDB API.</p>
+        </div>
+    </div>
+
+    <div class="rec-results-grid">
+        <div class="rec-item-card">
+            <div class="rec-rank-col"><span class="rec-rank-badge">01</span></div>
+            <div class="rec-body-col">
+                <div class="rec-title-row">
+                    <div>
+                        <h4 class="rec-movie-title">Representasi Fitur Konten Multi-Feature (Total 461 Dimensi per Film)</h4>
+                        <span class="rec-genre-tag">Gabungan 65% Overview (384-Dim) + 25% Genre Asli (13-Dim) + 10% Kru/Pemeran (64-Dim).</span>
+                    </div>
+                    <button type="button" class="btn-use-ref" onclick="toggleDetail('detail-tahap-1')">Tampilkan / Sembunyikan</button>
+                </div>
+                <div id="detail-tahap-1" style="display: block; margin-top: 10px; padding-top: 10px; border-top: 1px solid #2e2e2e;">
+                    <p class="rec-overview-desc" style="margin: 0;">
+                        Setiap film direpresentasikan menjadi deretan <strong>461 angka (vektor)</strong> agar dapat diukur kemiripannya secara matematis: <strong>384 dimensi</strong> dari <em>Sentence-BERT</em> (<code>all-MiniLM-L6-v2</code>) untuk menangkap makna konteks sinopsis (bobot dominan <strong>65%</strong>), <strong>13 dimensi</strong> biner dari <em>Multi-Label Genre</em> agar domain genre konsisten (bobot <strong>25%</strong>), dan <strong>64 dimensi</strong> hasil reduksi <em>TF-IDF + TruncatedSVD</em> untuk mencatat kesamaan pemeran/kru (bobot <strong>10%</strong>).
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="rec-item-card">
+            <div class="rec-rank-col"><span class="rec-rank-badge">02</span></div>
+            <div class="rec-body-col">
+                <div class="rec-title-row">
+                    <div>
+                        <h4 class="rec-movie-title">Klasifikasi Multi-Label {{ metrics.num_genres }} Genre Asli (One-vs-Rest Logistic Regression)</h4>
+                        <span class="rec-genre-tag">Memprediksi hingga 3 genre teratas per sinopsis menggunakan ambang batas (Threshold) 0.55.</span>
+                    </div>
+                    <button type="button" class="btn-use-ref" onclick="toggleDetail('detail-tahap-2')">Tampilkan / Sembunyikan</button>
+                </div>
+                <div id="detail-tahap-2" style="display: block; margin-top: 10px; padding-top: 10px; border-top: 1px solid #2e2e2e;">
+                    <p class="rec-overview-desc" style="margin: 0;">
+                        Sistem melatih <strong>{{ metrics.num_genres }} pengklasifikasi biner independen</strong> (<code>OneVsRestClassifier</code>) di atas vektor semantik Sentence-BERT. Suatu genre dinyatakan aktif apabila probabilitas prediksinya mencapai <strong>&ge; 55% (threshold 0.55)</strong> dengan parameter <code>class_weight='balanced'</code> agar genre minoritas seperti <em>Horror</em> atau <em>Mystery</em> tetap terdeteksi secara adil.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="rec-item-card">
+            <div class="rec-rank-col"><span class="rec-rank-badge">03</span></div>
+            <div class="rec-body-col">
+                <div class="rec-title-row">
+                    <div>
+                        <h4 class="rec-movie-title">Personalisasi 2 Profil User Profile Vector per Akun di Halaman Untuk Anda</h4>
+                        <span class="rec-genre-tag">Menghasilkan 2 baris terpisah (15 Film berbasis Favorit &amp; 15 Film berbasis Riwayat Overview).</span>
+                    </div>
+                    <button type="button" class="btn-use-ref" onclick="toggleDetail('detail-tahap-3')">Tampilkan / Sembunyikan</button>
+                </div>
+                <div id="detail-tahap-3" style="display: block; margin-top: 10px; padding-top: 10px; border-top: 1px solid #2e2e2e;">
+                    <p class="rec-overview-desc" style="margin: 0;">
+                        Pada halaman khusus <strong>Untuk Anda (<code>/untuk-anda</code>)</strong>, sistem membentuk dua vektor profil terpisah untuk setiap akun: (1) rata-rata vektor item <strong>461-Dim</strong> dari seluruh film yang ditandai <strong>&#9829; Favorit</strong> (dengan mengecualikan film yang sudah difavoritkan agar selalu muncul judul baru), dan (2) rata-rata vektor semantik dari maksimal <strong>5 riwayat pencarian overview terbaru</strong> (bobot <strong>75% cerita + 25% genre</strong>). Masing-masing baris menampilkan <strong>15 film</strong> dalam <em>infinite looping carousel</em> horizontal.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="rec-item-card">
+            <div class="rec-rank-col"><span class="rec-rank-badge">04</span></div>
+            <div class="rec-body-col">
+                <div class="rec-title-row">
+                    <div>
+                        <h4 class="rec-movie-title">Pengukuran Cosine Similarity &amp; Pop-Up Item-to-Item CBF (/api/serupa)</h4>
+                        <span class="rec-genre-tag">Skor kemiripan 0%&ndash;100% dihitung lewat sudut kosinus vektor; tersedia pop-up Film Serupa di semua halaman.</span>
+                    </div>
+                    <button type="button" class="btn-use-ref" onclick="toggleDetail('detail-tahap-4')">Tampilkan / Sembunyikan</button>
+                </div>
+                <div id="detail-tahap-4" style="display: block; margin-top: 10px; padding-top: 10px; border-top: 1px solid #2e2e2e;">
+                    <p class="rec-overview-desc" style="margin: 0;">
+                        <strong>Cosine Similarity</strong> berfungsi sebagai <em>metrik pengukur kemiripan</em> di dalam metode CBF, menghasilkan skor <strong>0% hingga 100%</strong>. Pada halaman <strong>Prediksi AI</strong>, skor akhir menggabungkan <strong>75% kemiripan makna sinopsis + 25% keselarasan 13 genre</strong>. Sementara itu, fitur <strong>Film Serupa</strong> menggunakan kesamaan vektor penuh 461-Dim secara asinkron (AJAX ke <code>/api/serupa</code>) untuk menampilkan Top 10 film paling mirip dalam <em>pop-up modal</em> langsung di halaman yang sedang aktif.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="rec-item-card">
+            <div class="rec-rank-col"><span class="rec-rank-badge">05</span></div>
+            <div class="rec-body-col">
+                <div class="rec-title-row">
+                    <div>
+                        <h4 class="rec-movie-title">Arsitektur Database PostgreSQL &amp; Optimasi Poster TMDB API (/api/poster)</h4>
+                        <span class="rec-genre-tag">3 tabel relasional terisolasi per akun + lazy-loading poster film dengan penyimpanan cache lokal JSON.</span>
+                    </div>
+                    <button type="button" class="btn-use-ref" onclick="toggleDetail('detail-tahap-5')">Tampilkan / Sembunyikan</button>
+                </div>
+                <div id="detail-tahap-5" style="display: block; margin-top: 10px; padding-top: 10px; border-top: 1px solid #2e2e2e;">
+                    <p class="rec-overview-desc" style="margin: 0;">
+                        Data pengguna dikelola pada 3 tabel PostgreSQL: <code>user_account</code> (akun &amp; autentikasi sesi), <code>riwayat_rekomendasi</code> (riwayat CRUD input overview), dan <code>user_favorite</code> (daftar film favorit per akun). Untuk visual katalog sebanyak {{ metrics.total_clean }} film, sistem menggunakan strategi <em>On-Demand Lazy Loading</em> melalui <code>IntersectionObserver</code> ke endpoint <code>/api/poster</code> yang terhubung ke <strong>TMDB API</strong> dan menyimpan URL poster secara permanen ke <code>poster_cache.json</code> agar respons cepat, hemat <em>bandwidth</em>, dan tidak memenuhi ruang disk.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. HASIL PENGUJIAN MODEL & PANDUAN MEMBACA ANGKA EVALUASI -->
+<section class="section-container" id="evaluasi-model" style="padding-top: 0;">
+    <div class="section-header-flex">
+        <div>
+            <h2 class="section-title">4. Hasil Pengujian Sistem &amp; Panduan Membaca Setiap Angka Evaluasi</h2>
+            <p class="section-subtitle">Memisahkan pengujian kualitas perankingan rekomendasi Top-10 (CBF) dengan pengujian akurasi klasifikasi Multi-Label {{ metrics.num_genres }} Genre beserta arti masing-masing angkanya.</p>
+        </div>
+    </div>
+
+    <!-- BARIS ATAS: 2 KARTU SEJAJAR DENGAN TINGGI SEIMBANG -->
+    <div class="info-grid" style="margin-bottom: 18px; align-items: stretch;">
+        <!-- KARTU KIRI: 4 METRIK UTAMA + PENJELASAN SINGKAT -->
+        <div class="info-card eval-balanced-card">
+            <div>
+                <h3>Metrik Utama Pengujian CBF &amp; Klasifikasi</h3>
+                <div class="metrics-badges">
+                    <div class="metric-item" style="border-color: var(--netflix-red);">
+                        <span>Precision@10 (Evaluasi CBF)</span>
+                        <strong style="color: var(--imdb-gold);">{{ metrics.precision_at_10 }}%</strong>
+                        <span class="metric-explain-sub">Proporsi film relevan (irisan genre cocok) pada <strong>Top-10 rekomendasi</strong> dari 300 sampel uji.</span>
+                    </div>
+                    <div class="metric-item" style="border-color: var(--netflix-red);">
+                        <span>Hit Rate@10 (Evaluasi CBF)</span>
+                        <strong style="color: var(--imdb-gold);">{{ metrics.hit_rate_10 }}%</strong>
+                        <span class="metric-explain-sub">Persentase pengujian yang berhasil memunculkan <strong>minimal 1 film relevan</strong> di Top-10.</span>
+                    </div>
+                    <div class="metric-item">
+                        <span>Hamming Accuracy ({{ metrics.num_genres }} Genre)</span>
+                        <strong>{{ metrics.accuracy }}%</strong>
+                        <span class="metric-explain-sub">Rata-rata ketepatan keputusan <em>Ya/Tidak</em> di {{ metrics.num_genres }} label genre (~10,5 dari {{ metrics.num_genres }} label tepat per film).</span>
+                    </div>
+                    <div class="metric-item">
+                        <span>F1-Score (Weighted Avg)</span>
+                        <strong>{{ metrics.f1_score }}%</strong>
+                        <span class="metric-explain-sub">Keseimbangan Precision ({{ metrics.precision }}%) &amp; Recall ({{ metrics.recall }}%) pada {{ metrics.num_genres }} genre (Micro F1: {{ metrics.micro_f1 }}%).</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="number-explain-box" style="margin-top: 14px;">
+                <div style="margin-bottom: 8px;">
+                    <strong>Mengapa Precision@10 ({{ metrics.precision_at_10 }}%) &amp; Hit Rate@10 ({{ metrics.hit_rate_10 }}%) tinggi?</strong><br>
+                    Vektor item CBF menyertakan bobot genre 25% dan diuji relevansinya dengan kecocokan minimal 1 irisan genre di Top-10, membuktikan rekomendasi tetap konsisten pada domain genre yang sesuai.
+                </div>
+                <div>
+                    <strong>Mengapa F1-Score ({{ metrics.f1_score }}%) lebih rendah dari Hamming Accuracy ({{ metrics.accuracy }}%)?</strong><br>
+                    Pada <em>Multi-Label {{ metrics.num_genres }} Genre</em>, model memprediksi beberapa genre sekaligus hanya dari sinopsis singkat. Nilai Recall rata-rata <strong>{{ metrics.recall }}%</strong> menunjukkan model peka menangkap genre asli film.
+                </div>
+            </div>
+        </div>
+
+        <!-- KARTU KANAN: CLASSIFICATION REPORT -->
+        <div class="info-card eval-balanced-card">
+            <h3>Classification Report Multi-Label ({{ metrics.num_genres }} Genre Asli IMDb)</h3>
+            <pre class="code-report eval-report-pre">{{ metrics.classification_report }}</pre>
+        </div>
+    </div>
+
+    <!-- BARIS BAWAH: PANDUAN MEMBACA KOLOM REPORT (MEMANJANG PENUH & SIMETRIS) -->
+    <div class="info-card">
+        <h3 style="margin-bottom: 4px;">Panduan Membaca Tabel Classification Report</h3>
+        <p style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 10px;">
+            Keterangan arti setiap kolom dan baris ringkasan pada tabel evaluasi Multi-Label {{ metrics.num_genres }} Genre di atas:
+        </p>
+
+        <div class="report-legend-grid-4">
+            <div class="report-legend-item">
+                <strong>precision (0.00 &ndash; 1.00)</strong>
+                Dari semua film yang ditebak AI bergenre X, berapa proporsi yang benar-benar bergenre X (ketepatan tebakan).
+            </div>
+            <div class="report-legend-item">
+                <strong>recall (0.00 &ndash; 1.00)</strong>
+                Dari seluruh film asli bergenre X di data uji, berapa proporsi yang berhasil ditemukan AI (kepekaan deteksi).
+            </div>
+            <div class="report-legend-item">
+                <strong>f1-score (0.00 &ndash; 1.00)</strong>
+                Rata-rata harmonik gabungan <em>precision</em> dan <em>recall</em>. Semakin mendekati 1.00, performa genre makin seimbang.
+            </div>
+            <div class="report-legend-item">
+                <strong>support (Jumlah Label Uji)</strong>
+                Banyaknya kemunculan label genre tersebut pada 20% data uji ({{ metrics.test_size }} film; total lebih besar karena 1 film bisa multi-genre).
+            </div>
+            <div class="report-legend-item" style="grid-column: 1 / -1;">
+                <strong>micro avg / macro avg / weighted avg / samples avg</strong>
+                Ringkasan rata-rata keseluruhan: <em>micro</em> menghitung total seluruh prediksi sekaligus, <em>macro</em> merata-rata {{ metrics.num_genres }} genre dengan bobot sama, <em>weighted</em> membobot sesuai <em>support</em> tiap genre, dan <em>samples</em> menghitung rata-rata per film uji.
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

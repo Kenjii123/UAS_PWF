@@ -1,0 +1,2434 @@
+:root {
+    --netflix-red: #E50914;
+    --netflix-red-hover: #f6121d;
+    --netflix-dark: #111111;
+    --netflix-surface: #181818;
+    --netflix-card: #1f1f1f;
+    --netflix-border: #2e2e2e;
+    --text-light: #ffffff;
+    --text-muted: #b3b3b3;
+    --green-match: #46d369;
+    --imdb-gold: #F5C518;
+    --imdb-dark: #121212;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+    background-color: var(--netflix-dark);
+    color: var(--text-light);
+    line-height: 1.55;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+.highlight-red {
+    color: var(--netflix-red);
+}
+
+/* NAVBAR KELOMPOK */
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap !important;
+    gap: 14px;
+    padding: 14px 4%;
+    background: rgba(15, 15, 15, 0.96);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid #282828;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+}
+
+.nav-left,
+.nav-right {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 18px;
+}
+
+.nav-right {
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.brand-logo {
+    color: var(--netflix-red);
+    font-size: 1.75rem;
+    font-weight: 900;
+    text-decoration: none;
+    letter-spacing: 1px;
+}
+
+.brand-logo span {
+    background: var(--netflix-red);
+    color: #fff;
+    font-size: 0.75rem;
+    padding: 2px 7px;
+    border-radius: 4px;
+    vertical-align: middle;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    list-style: none;
+}
+
+.nav-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.94rem;
+    transition: color 0.2s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: #fff;
+    font-weight: 600;
+}
+
+.account-pill-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #1e1e1e;
+    border: 1px solid #444;
+    color: #fff;
+    padding: 5px 12px 5px 6px;
+    border-radius: 24px;
+    cursor: pointer;
+    font-size: 0.86rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.account-pill-btn:hover {
+    border-color: var(--netflix-red);
+    background: #262626;
+}
+
+.account-avatar-sm {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--netflix-red);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.8rem;
+}
+
+.account-pill-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.15;
+    text-align: left;
+}
+
+.account-email-sub {
+    font-size: 0.68rem;
+    color: #9ca3af;
+    font-weight: 500;
+}
+
+.btn-netflix-sm {
+    background: var(--netflix-red);
+    color: #fff;
+    padding: 8px 15px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.88rem;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-netflix-sm:hover {
+    background: var(--netflix-red-hover);
+}
+
+/* HERO BANNER KELOMPOK */
+.hero-banner {
+    position: relative;
+    padding: 56px 4%;
+    background: radial-gradient(circle at 75% 25%, #6b1116 0%, #141414 68%);
+    border-bottom: 1px solid #262626;
+    overflow: hidden;
+}
+
+.hero-bg-backdrop {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.14;
+    filter: blur(22px) scale(1.1);
+    transition: background-image 0.8s ease-in-out;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.hero-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px;
+    position: relative;
+    z-index: 2;
+}
+
+.hero-badges-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.account-context-badge {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.76rem;
+}
+
+.badge-top10 {
+    background: var(--netflix-red);
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 4px 9px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+}
+
+.hero-title {
+    font-size: 2.85rem;
+    font-weight: 900;
+    margin: 10px 0;
+    letter-spacing: 0.5px;
+    line-height: 1.18;
+}
+
+.hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+    font-size: 0.95rem;
+}
+
+.match-score {
+    color: var(--green-match);
+    font-weight: 700;
+}
+
+.worth-pill {
+    background: rgba(70, 211, 105, 0.18);
+    border: 1px solid var(--green-match);
+    color: var(--green-match);
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.84rem;
+}
+
+.age-badge {
+    background: rgba(245, 197, 24, 0.15);
+    border: 1px solid var(--imdb-gold);
+    color: var(--imdb-gold);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.84rem;
+    font-weight: 700;
+}
+
+.hero-overview-box {
+    background: rgba(0, 0, 0, 0.45);
+    border-left: 4px solid var(--netflix-red);
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    max-width: 680px;
+    margin-bottom: 24px;
+}
+
+.overview-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--netflix-red);
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+.hero-desc {
+    color: #e5e7eb;
+    font-size: 0.94rem;
+}
+
+.hero-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.btn-play {
+    background: var(--netflix-red);
+    color: #fff;
+    padding: 12px 22px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+}
+
+.btn-play:hover {
+    background: var(--netflix-red-hover);
+    transform: translateY(-1px);
+}
+
+.btn-imdb-hero {
+    background: var(--imdb-gold);
+    color: var(--imdb-dark);
+    padding: 12px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 800;
+    transition: opacity 0.2s, transform 0.15s;
+}
+
+.btn-imdb-hero:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+}
+
+.btn-info {
+    background: rgba(109, 109, 110, 0.7);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* SLIDER POSTER DI KANAN HERO */
+.hero-poster-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.poster-stage {
+    position: relative;
+    width: 230px;
+    height: 345px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.85);
+    border: 2px solid rgba(229, 9, 20, 0.65);
+    background: #111;
+}
+
+.poster-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: scale(1.05);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    pointer-events: none;
+}
+
+.poster-slide.active {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+}
+
+.poster-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.poster-badge-hd {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--netflix-red);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.poster-badge-rating {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.85);
+    color: var(--imdb-gold);
+    border: 1px solid var(--imdb-gold);
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.poster-overlay-info {
+    position: absolute;
+    inset: auto 0 0 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.96) 22%, rgba(0, 0, 0, 0.55) 70%, transparent 100%);
+    padding: 24px 12px 12px;
+}
+
+.poster-movie-title {
+    font-size: 0.98rem;
+    font-weight: 800;
+    color: #fff;
+}
+
+.poster-movie-meta {
+    font-size: 0.74rem;
+    color: var(--imdb-gold);
+    font-weight: 600;
+}
+
+.poster-dots {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.poster-dot {
+    width: 18px;
+    height: 5px;
+    border-radius: 3px;
+    background: #333;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.poster-dot.active {
+    width: 30px;
+    background: var(--netflix-red);
+}
+
+@media (max-width: 768px) {
+    .hero-flex {
+        flex-direction: column;
+    }
+    .hero-poster-wrap {
+        display: none;
+    }
+}
+
+/* SECTIONS & INFO PANEL KELOMPOK */
+.section-container {
+    padding: 36px 4%;
+}
+
+.section-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-bottom: 22px;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    margin-bottom: 6px;
+}
+
+.section-subtitle {
+    color: var(--text-muted);
+    font-size: 0.92rem;
+    margin-bottom: 12px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.info-card {
+    background: var(--netflix-card);
+    border: 1px solid var(--netflix-border);
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.info-card h3 {
+    color: var(--netflix-red);
+    margin-bottom: 10px;
+}
+
+.clean-list {
+    padding-left: 18px;
+    font-size: 0.9rem;
+    color: #ddd;
+}
+
+.clean-list li {
+    margin-bottom: 6px;
+}
+
+.metrics-badges {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.metric-item {
+    background: #141414;
+    border: 1px solid #333;
+    padding: 12px;
+    border-radius: 6px;
+    text-align: center;
+}
+
+.metric-item span {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.metric-item strong {
+    font-size: 1.3rem;
+    color: var(--green-match);
+}
+
+/* ACCOUNT BANNER & CRUD LAYOUT DI HALAMAN PREDIKSI */
+.account-banner-card {
+    background: linear-gradient(135deg, #1f1213 0%, #181818 100%);
+    border: 1px solid #3a2022;
+    border-radius: 12px;
+    padding: 22px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.account-banner-left {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex: 1;
+    min-width: 280px;
+}
+
+.account-avatar-lg {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    background: var(--netflix-red);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: 900;
+    box-shadow: 0 8px 20px rgba(229, 9, 20, 0.35);
+}
+
+.account-status-pill {
+    display: inline-block;
+    background: rgba(70, 211, 105, 0.16);
+    border: 1px solid var(--green-match);
+    color: var(--green-match);
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.crud-layout {
+    display: grid;
+    grid-template-columns: 410px 1fr;
+    gap: 24px;
+    align-items: start;
+    margin-bottom: 32px;
+}
+
+@media (max-width: 1100px) {
+    .crud-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.form-card,
+.table-card {
+    background: var(--netflix-card);
+    border: 1px solid var(--netflix-border);
+    border-radius: 10px;
+    padding: 22px;
+}
+
+.form-helper-text {
+    font-size: 0.84rem;
+    color: var(--text-muted);
+    margin: 6px 0 16px;
+}
+
+.netflix-form .form-group {
+    margin-bottom: 14px;
+}
+
+.netflix-form label {
+    display: block;
+    font-size: 0.84rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #e5e7eb;
+}
+
+.netflix-form input,
+.netflix-form select,
+.netflix-form textarea {
+    width: 100%;
+    padding: 10px 12px;
+    background: #121212;
+    border: 1px solid #444;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.netflix-form input:focus,
+.netflix-form select:focus,
+.netflix-form textarea:focus {
+    border-color: var(--netflix-red);
+    outline: none;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.preset-chips-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 10px 0 16px;
+}
+
+.preset-label {
+    width: 100%;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+
+.preset-chip {
+    background: #262626;
+    border: 1px solid #444;
+    color: #e5e7eb;
+    font-size: 0.75rem;
+    padding: 5px 10px;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.preset-chip:hover {
+    border-color: var(--netflix-red);
+    background: #331517;
+    color: #fff;
+}
+
+/* PANEL HASIL REKOMENDASI FILM & SORT LIST KELOMPOK */
+.rec-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding-bottom: 18px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid #333;
+}
+
+.rec-badge-top {
+    display: inline-block;
+    background: rgba(229, 9, 20, 0.2);
+    border: 1px solid rgba(229, 9, 20, 0.5);
+    color: #fca5a5;
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 3px 9px;
+    border-radius: 4px;
+    margin-bottom: 6px;
+}
+
+.rec-panel-title {
+    font-size: 1.3rem;
+    margin-bottom: 4px;
+}
+
+.rec-query-preview {
+    font-size: 0.84rem;
+    color: #cbd5e1;
+    max-width: 620px;
+}
+
+.rec-sort-control-box {
+    background: #141414;
+    border: 1px solid #383838;
+    padding: 12px 14px;
+    border-radius: 8px;
+    min-width: 270px;
+}
+
+.rec-sort-control-box label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #e5e7eb;
+    margin-bottom: 6px;
+}
+
+.netflix-select-sort {
+    width: 100%;
+    background: #1f1f1f;
+    color: #fff;
+    border: 1px solid var(--netflix-red);
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 0.84rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.rec-results-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.rec-item-card {
+    display: flex;
+    align-items: stretch;
+    gap: 16px;
+    background: #161616;
+    border: 1px solid #2e2e2e;
+    border-radius: 10px;
+    padding: 14px;
+    transition: border-color 0.2s, transform 0.15s;
+}
+
+.rec-item-card:hover {
+    border-color: var(--netflix-red);
+    transform: translateX(3px);
+}
+
+.rec-rank-col {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 2px;
+}
+
+.rec-rank-badge {
+    background: #252525;
+    border: 1px solid #444;
+    color: #fff;
+    font-weight: 900;
+    font-size: 0.95rem;
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rec-body-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.rec-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.rec-movie-title {
+    font-size: 1.1rem;
+    color: #fff;
+}
+
+.rec-year {
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.rec-genre-tag {
+    display: inline-block;
+    font-size: 0.78rem;
+    color: #9ca3af;
+    margin-top: 2px;
+}
+
+.rec-metrics-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.rec-sim-badge {
+    background: rgba(70, 211, 105, 0.16);
+    border: 1px solid var(--green-match);
+    color: var(--green-match);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 800;
+}
+
+.rec-imdb-badge {
+    background: rgba(245, 197, 24, 0.16);
+    border: 1px solid var(--imdb-gold);
+    color: var(--imdb-gold);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 800;
+}
+
+.sim-progress-wrap {
+    width: 100%;
+    height: 6px;
+    background: #2a2a2a;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 8px 0;
+}
+
+.sim-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--netflix-red) 0%, var(--green-match) 100%);
+    border-radius: 4px;
+}
+
+.rec-overview-desc {
+    font-size: 0.84rem;
+    color: #d1d5db;
+    line-height: 1.45;
+    margin-bottom: 10px;
+}
+
+.rec-actions-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.btn-imdb-card {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--imdb-gold);
+    color: var(--imdb-dark);
+    font-weight: 800;
+    font-size: 0.78rem;
+    padding: 7px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.btn-imdb-card:hover {
+    opacity: 0.9;
+}
+
+.btn-use-ref {
+    background: #262626;
+    border: 1px solid #444;
+    color: #e5e7eb;
+    padding: 7px 12px;
+    border-radius: 5px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-use-ref:hover {
+    border-color: var(--netflix-red);
+    color: #fff;
+}
+
+/* TABEL RIWAYAT SEARCHING AKUN KELOMPOK */
+.table-header-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.btn-clear-history {
+    background: #3f1d1d;
+    border: 1px solid #dc2626;
+    color: #fca5a5;
+    padding: 7px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-clear-history:hover {
+    background: #dc2626;
+    color: #fff;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.netflix-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+}
+
+.netflix-table th,
+.netflix-table td {
+    border-bottom: 1px solid #333;
+    padding: 13px 10px;
+    vertical-align: top;
+    text-align: left;
+}
+
+.netflix-table th {
+    color: var(--text-muted);
+    background: #161616;
+}
+
+.table-review {
+    font-size: 0.83rem;
+    color: #e5e7eb;
+    margin-bottom: 4px;
+}
+
+.btn-delete {
+    background: #dc2626;
+    color: #fff;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.76rem;
+    width: 100%;
+}
+
+.empty-state-box {
+    background: #1a1a1a;
+    border: 1px dashed #444;
+    border-radius: 10px;
+    padding: 32px;
+    text-align: center;
+    color: #9ca3af;
+}
+
+/* CONTACT PAGE KELOMPOK (2X2 + 1 KOTAK PANJANG) */
+.whos-watching-title {
+    text-align: center;
+    font-size: 2.3rem;
+    margin-bottom: 6px;
+}
+
+.profiles-grid-2x2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    max-width: 980px;
+    margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+    .profiles-grid-2x2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+.profile-card {
+    background: var(--netflix-card);
+    border: 1px solid var(--netflix-border);
+    border-radius: 10px;
+    padding: 26px 22px;
+    text-align: center;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.profile-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--netflix-red);
+}
+
+.profile-avatar {
+    width: 82px;
+    height: 82px;
+    border-radius: 10px;
+    background: var(--netflix-red);
+    color: #fff;
+    margin: 0 auto 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    font-weight: 900;
+}
+
+.nim-badge {
+    display: inline-block;
+    background: #2d2d2d;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    margin: 6px 0;
+}
+
+.role-title {
+    color: var(--netflix-red);
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.task-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-align: left;
+}
+
+/* PROFILE DASHBOARD KELOMPOK */
+.acc-dashboard-hero {
+    background: linear-gradient(135deg, #2b0c10 0%, #181818 100%);
+    border: 1px solid #451a1e;
+    border-radius: 12px;
+    padding: 24px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.acc-hero-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.acc-hero-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 14px;
+    background: var(--netflix-red);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    font-weight: 900;
+    box-shadow: 0 10px 24px rgba(229, 9, 20, 0.4);
+}
+
+.acc-member-badge {
+    display: inline-block;
+    background: rgba(70, 211, 105, 0.16);
+    border: 1px solid var(--green-match);
+    color: var(--green-match);
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 3px 9px;
+    border-radius: 4px;
+}
+
+.acc-hero-title {
+    font-size: 1.85rem;
+    margin: 4px 0;
+}
+
+.acc-hero-sub {
+    color: #d1d5db;
+    font-size: 0.92rem;
+}
+
+.btn-logout-hero {
+    background: #2d1416;
+    border: 1px solid #ef4444;
+    color: #fca5a5;
+    padding: 10px 18px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.btn-logout-hero:hover {
+    background: #dc2626;
+    color: #fff;
+}
+
+.acc-maintenance-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 22px;
+    margin-top: 24px;
+}
+
+.acc-maint-card {
+    background: var(--netflix-card);
+    border: 1px solid var(--netflix-border);
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.maint-card-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 14px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid #2e2e2e;
+}
+
+.acc-info-kv {
+    background: #141414;
+    border: 1px solid #2c2c2c;
+    border-radius: 8px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.kv-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.86rem;
+}
+
+.kv-row span {
+    color: #9ca3af;
+}
+
+.alert-banner {
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+}
+
+.alert-success {
+    background: rgba(16, 185, 129, 0.18);
+    border: 1px solid #10b981;
+    color: #34d399;
+}
+
+.alert-error {
+    background: rgba(239, 68, 68, 0.18);
+    border: 1px solid #ef4444;
+    color: #fca5a5;
+}
+
+/* POP-UP MODAL LOGIN GATE KELOMPOK */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(76, 9, 14, 0.92) 0%, rgba(0, 0, 0, 0.95) 85%);
+    backdrop-filter: blur(8px);
+    z-index: 999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.modal-overlay.show {
+    display: flex;
+}
+
+.auth-center-card {
+    width: 100%;
+    max-width: 500px;
+    background: var(--netflix-card);
+    border: 1px solid var(--netflix-border);
+    border-radius: 12px;
+    padding: 28px 26px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.lang-selector-pill {
+    background: rgba(15, 15, 15, 0.75);
+    border: 1px solid #555;
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.lang-selector-pill:hover {
+    border-color: var(--netflix-red);
+}
+
+.auth-tabs-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin: 14px 0 18px;
+}
+
+.auth-tab-btn {
+    background: #161616;
+    border: 1px solid #3d3d3d;
+    color: #d1d5db;
+    padding: 10px 8px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.auth-tab-btn.active,
+.auth-tab-btn:hover {
+    background: var(--netflix-red);
+    border-color: var(--netflix-red);
+    color: #fff;
+}
+
+pre.code-report {
+    font-family: Consolas, monospace;
+    background: #141414;
+    color: #e5e7eb;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    border-left: 4px solid var(--netflix-red);
+    overflow-x: auto;
+    font-size: 0.84rem;
+    line-height: 1.5;
+}
+
+.footer {
+    text-align: center;
+    padding: 28px 4%;
+    border-top: 1px solid #262626;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-top: 40px;
+}
+
+/* ==========================================
+   FILTER KATALOG (/cari), TOMBOL FAVORIT & PERSONALISASI CBF
+   ========================================== */
+.filter-panel-card {
+    background: var(--netflix-card);
+    border: 1px solid var(--netflix-border);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+.filter-grid-controls {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+    gap: 12px;
+    align-items: end;
+}
+
+@media (max-width: 1024px) {
+    .filter-grid-controls {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .filter-grid-controls {
+        grid-template-columns: 1fr;
+    }
+}
+
+.catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    gap: 18px;
+}
+
+.catalog-movie-card {
+    background: var(--netflix-card);
+    border: 1px solid var(--netflix-border);
+    border-radius: 10px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 12px;
+    transition: border-color 0.2s, transform 0.2s;
+}
+
+.catalog-movie-card:hover {
+    border-color: var(--netflix-red);
+    transform: translateY(-2px);
+}
+
+.catalog-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.catalog-card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    padding-top: 10px;
+    border-top: 1px solid #2b2b2b;
+}
+
+.btn-fav {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #242424;
+    border: 1px solid #444;
+    color: #e5e7eb;
+    padding: 6px 11px;
+    border-radius: 5px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-fav:hover {
+    border-color: var(--netflix-red);
+    color: #fff;
+}
+
+.btn-fav.is-favorited {
+    background: rgba(229, 9, 20, 0.2);
+    border-color: var(--netflix-red);
+    color: #ff6b72;
+}
+
+.btn-similar-cbf {
+    display: inline-flex;
+    align-items: center;
+    background: #262626;
+    border: 1px solid #444;
+    color: #fff;
+    padding: 6px 11px;
+    border-radius: 5px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.btn-similar-cbf:hover {
+    background: var(--netflix-red);
+    border-color: var(--netflix-red);
+}
+
+.personal-cbf-banner {
+    background: linear-gradient(135deg, rgba(229, 9, 20, 0.14) 0%, #181818 65%);
+    border: 1px solid rgba(229, 9, 20, 0.4);
+    border-radius: 12px;
+    padding: 22px;
+}
+
+.pagination-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+}
+
+.page-btn {
+    background: #222;
+    color: #fff;
+    border: 1px solid #444;
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.86rem;
+    font-weight: 700;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.page-btn:hover {
+    background: var(--netflix-red);
+    border-color: var(--netflix-red);
+}
+
+.toast-notif {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #1a1a1a;
+    color: #fff;
+    border: 1px solid var(--green-match);
+    border-left: 4px solid var(--green-match);
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-size: 0.86rem;
+    font-weight: 600;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.75);
+    z-index: 1200;
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.toast-notif.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ==========================================
+   HORIZONTAL LOOPING CAROUSEL (/untuk-anda)
+   ========================================== */
+.carousel-section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.carousel-nav-controls {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.carousel-arrow-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #222;
+    border: 1px solid #444;
+    color: #fff;
+    font-size: 1.05rem;
+    font-weight: 800;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, border-color 0.2s, transform 0.15s;
+}
+
+.carousel-arrow-btn:hover {
+    background: var(--netflix-red);
+    border-color: var(--netflix-red);
+    transform: scale(1.06);
+}
+
+.loop-carousel-viewport {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Jangan pakai scroll-behavior: smooth di sini agar reset looping 100% tak terlihat */
+.loop-carousel-track {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    overflow-x: auto;
+    padding: 4px 2px 6px;
+    cursor: grab;
+    /* Sembunyikan scrollbar di Firefox & Edge/IE */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.loop-carousel-track:active {
+    cursor: grabbing;
+}
+
+/* Sembunyikan scrollbar di Chrome, Edge (Chromium), Safari, Opera */
+.loop-carousel-track::-webkit-scrollbar {
+    display: none;
+}
+
+.carousel-movie-card {
+    flex: 0 0 320px;
+    width: 320px;
+    background: #141414;
+    border: 1px solid var(--netflix-border);
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 12px;
+    user-select: none;
+    transition: border-color 0.2s, transform 0.2s;
+}
+
+.carousel-movie-card:hover {
+    border-color: var(--netflix-red);
+    transform: translateY(-2px);
+}
+
+.carousel-card-badges {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+
+.rec-rank-pill {
+    background: #252525;
+    border: 1px solid #444;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 6px;
+}
+
+.carousel-movie-title {
+    font-size: 1.06rem;
+    color: #fff;
+    line-height: 1.3;
+    margin-bottom: 5px;
+}
+
+.carousel-movie-meta {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.carousel-movie-desc {
+    font-size: 0.82rem;
+    color: #d1d5db;
+    line-height: 1.48;
+}
+
+.carousel-extra-detail {
+    margin-top: 10px;
+    background: #0e0e0e;
+    border: 1px solid #2e2e2e;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 0.78rem;
+    color: #cbd5e1;
+    line-height: 1.45;
+}
+
+@media (max-width: 600px) {
+    .carousel-movie-card {
+        flex: 0 0 275px;
+        width: 275px;
+    }
+}
+
+/* ==========================================
+   PANDUAN FITUR & PENJELASAN ANGKA (HOME)
+   ========================================== */
+.feature-guide-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 16px;
+}
+
+@media (max-width: 1024px) {
+    .feature-guide-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .feature-guide-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.feature-guide-card {
+    background: #161616;
+    border: 1px solid var(--netflix-border);
+    border-radius: 10px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
+    transition: border-color 0.2s, transform 0.2s;
+}
+
+.feature-guide-card:hover {
+    border-color: var(--netflix-red);
+    transform: translateY(-2px);
+}
+
+.feature-step-tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    color: var(--imdb-gold);
+    background: rgba(245, 197, 24, 0.12);
+    border: 1px solid rgba(245, 197, 24, 0.35);
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 6px;
+}
+
+.metric-explain-sub {
+    display: block;
+    font-size: 0.74rem;
+    color: #9ca3af;
+    margin-top: 5px;
+    line-height: 1.4;
+    font-weight: 400;
+}
+
+.number-explain-box {
+    margin-top: 16px;
+    background: #141414;
+    border: 1px solid #2c2c2c;
+    border-left: 3px solid var(--imdb-gold);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 0.84rem;
+    color: #d1d5db;
+    line-height: 1.55;
+}
+
+.number-explain-box strong {
+    color: #fff;
+}
+
+.report-legend-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 14px;
+}
+
+@media (max-width: 640px) {
+    .report-legend-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.report-legend-item {
+    background: #141414;
+    border: 1px solid #2b2b2b;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 0.8rem;
+    color: #cbd5e1;
+    line-height: 1.45;
+}
+
+.report-legend-item strong {
+    color: var(--imdb-gold);
+    display: block;
+    margin-bottom: 2px;
+}
+
+.genre-pill-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.genre-mini-pill {
+    font-size: 0.75rem;
+    background: #222;
+    border: 1px solid #383838;
+    color: #e5e7eb;
+    padding: 3px 9px;
+    border-radius: 999px;
+}
+
+/* ==========================================
+   PERBAIKAN KERAPIAN SEKSI EVALUASI MODEL (HOME)
+   ========================================== */
+.eval-balanced-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Pastikan teks <strong> di dalam deskripsi kecil TIDAK ikut membesar/hijau */
+.metric-item .metric-explain-sub {
+    display: block;
+    font-size: 0.76rem;
+    color: #9ca3af;
+    margin-top: 6px;
+    line-height: 1.45;
+    font-weight: 400;
+    text-align: center;
+}
+
+.metric-item .metric-explain-sub strong {
+    font-size: inherit !important;
+    color: #e5e7eb !important;
+    font-weight: 600 !important;
+    display: inline !important;
+    margin: 0 !important;
+}
+
+.eval-report-pre {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    overflow-x: auto;
+}
+
+.report-legend-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-top: 12px;
+}
+
+@media (max-width: 1024px) {
+    .report-legend-grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .report-legend-grid-4 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==========================================
+   HERO SECTION KHUSUS SUB-HALAMAN (/untuk-anda & /cari)
+   ========================================== */
+.hero-banner-sub {
+    min-height: 360px;
+    padding-top: 42px;
+    padding-bottom: 42px;
+}
+
+.hero-side-card {
+    background: rgba(20, 20, 20, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-top: 3px solid var(--netflix-red);
+    border-radius: 12px;
+    padding: 20px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+}
+
+.hero-side-label {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    color: var(--imdb-gold);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.hero-side-title {
+    font-size: 1.12rem;
+    color: #fff;
+    margin-bottom: 12px;
+}
+
+.hero-top-pick-box {
+    background: #121212;
+    border: 1px solid #2e2e2e;
+    border-left: 3px solid var(--green-match);
+    border-radius: 8px;
+    padding: 11px 13px;
+    margin-top: 12px;
+}
+
+.hero-quick-genre-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.hero-genre-chip {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: #e5e7eb;
+    background: #242424;
+    border: 1px solid #3d3d3d;
+    transition: all 0.2s;
+}
+
+.hero-genre-chip:hover,
+.hero-genre-chip.active {
+    background: var(--netflix-red);
+    border-color: var(--netflix-red);
+    color: #fff;
+}
+
+/* ==========================================
+   POP-UP MODAL FILM SERUPA (ITEM-TO-ITEM CBF)
+   ========================================== */
+.similar-modal-card {
+    background: #161616;
+    border: 1px solid #333;
+    border-top: 3px solid var(--netflix-red);
+    border-radius: 12px;
+    width: 94%;
+    max-width: 840px;
+    max-height: 86vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85);
+}
+
+.similar-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px 22px;
+    background: #111;
+    border-bottom: 1px solid #2b2b2b;
+    flex-shrink: 0;
+}
+
+/* ==========================================
+   CUSTOM SCROLLBAR POP-UP FILM SERUPA
+   ========================================== */
+.similar-modal-body {
+    padding: 18px 20px 18px 22px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    scroll-behavior: smooth;
+}
+
+/* Desain Ramping & Mengambang (Chrome, Edge, Safari, Opera) */
+.similar-modal-body::-webkit-scrollbar {
+    width: 10px;
+}
+
+.similar-modal-body::-webkit-scrollbar-track {
+    background: #141414;
+    border-radius: 999px;
+    margin: 8px 0;
+}
+
+.similar-modal-body::-webkit-scrollbar-thumb {
+    background: #3a3a3a;
+    border-radius: 999px;
+    border: 2px solid #141414; /* Memberi jarak tipis agar tampak mengambang */
+}
+
+.similar-modal-body::-webkit-scrollbar-thumb:hover {
+    background: var(--netflix-red);
+}
+
+.similar-modal-body::-webkit-scrollbar-thumb:active {
+    background: #ff2a36;
+}
+
+/* Hilangkan panah kecil di ujung atas & bawah */
+.similar-modal-body::-webkit-scrollbar-button {
+    display: none;
+    width: 0;
+    height: 0;
+}
+
+/* Fallback khusus Firefox (diletakkan di @supports agar tidak menimpa WebKit di Chrome/Edge) */
+@supports not selector(::-webkit-scrollbar) {
+    .similar-modal-body {
+        scrollbar-width: thin;
+        scrollbar-color: #3a3a3a #141414;
+    }
+}
+
+.similar-modal-loading {
+    text-align: center;
+    padding: 40px 16px;
+    color: var(--text-muted);
+    font-size: 0.92rem;
+}
+
+/* ==========================================
+   POSTER FILM LAZY LOADING & PLACEHOLDER
+   ========================================== */
+.catalog-poster-row {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+}
+
+.catalog-poster-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.movie-poster-box {
+    position: relative;
+    flex-shrink: 0;
+    border-radius: 7px;
+    overflow: hidden;
+    background: linear-gradient(145deg, #242424 0%, #141414 100%);
+    border: 1px solid #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Ukuran poster untuk kartu Cari Film & Untuk Anda */
+.movie-poster-box.poster-sm {
+    width: 88px;
+    height: 132px;
+}
+
+/* Ukuran poster untuk kartu hasil Prediksi AI & Pop-up Serupa */
+.movie-poster-box.poster-rec {
+    width: 78px;
+    height: 117px;
+}
+
+.movie-poster-box.is-loading::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.08) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    animation: posterShimmer 1.3s infinite;
+}
+
+@keyframes posterShimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.movie-poster-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.movie-poster-img.loaded {
+    opacity: 1;
+}
+
+.poster-fallback-text {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.22);
+    text-align: center;
+    padding: 6px;
+    user-select: none;
+}
+
+@media (max-width: 600px) {
+    .movie-poster-box.poster-sm {
+        width: 72px;
+        height: 108px;
+    }
+    .movie-poster-box.poster-rec {
+        width: 64px;
+        height: 96px;
+    }
+}
+
+/* Smooth scroll bawaan browser untuk tombol anchor */
+html {
+    scroll-behavior: smooth;
+}
+
+/* ==========================================
+   FILTER BOX 5 KOLOM & POP-UP MULTI-GENRE (/cari)
+   ========================================== */
+.filter-grid-controls {
+    display: grid;
+    grid-template-columns: 1.8fr 1fr 1fr 1fr 1fr;
+    gap: 14px;
+    align-items: end;
+}
+
+@media (max-width: 1024px) {
+    .filter-grid-controls {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .filter-grid-controls {
+        grid-template-columns: 1fr;
+    }
+}
+
+.genre-picker-box {
+    width: 100%;
+    height: 44px;
+    padding: 0 12px;
+    background: #141414;
+    border: 1px solid #3a3a3a;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 0.92rem;
+    font-family: inherit;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.genre-picker-box:hover,
+.genre-picker-box:focus {
+    border-color: var(--netflix-red);
+    outline: none;
+}
+
+.genre-picker-box.has-selection {
+    border-color: rgba(229, 9, 20, 0.7);
+}
+
+.genre-picker-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.genre-picker-chevron {
+    flex-shrink: 0;
+    color: #d1d5db;
+}
+
+/* ==========================================
+   MULTI-SELECT DROPDOWN GENRE (/cari)
+   ========================================== */
+.filter-panel-card {
+    overflow: visible;
+}
+
+.filter-grid-controls {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+    gap: 14px;
+    align-items: end;
+}
+
+.filter-grid-controls input[type="text"],
+.filter-grid-controls select,
+.filter-grid-controls .multi-select-trigger {
+    height: 44px;
+    box-sizing: border-box;
+    margin-bottom: 0;
+}
+
+@media (max-width: 1024px) {
+    .filter-grid-controls {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .filter-grid-controls .form-group:first-child {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 600px) {
+    .filter-grid-controls {
+        grid-template-columns: 1fr;
+    }
+}
+
+.multi-select-dropdown {
+    position: relative;
+    width: 100%;
+}
+
+.multi-select-trigger {
+    width: 100%;
+    padding: 0 9px 0 12px;
+    background: #141414;
+    border: 1px solid #3a3a3a;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 0.9rem;
+    font-family: inherit;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.2s;
+}
+
+.multi-select-trigger:hover,
+.multi-select-dropdown.open .multi-select-trigger {
+    border-color: var(--netflix-red);
+}
+
+#genreTriggerText {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.multi-select-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.multi-select-dropdown.open .multi-select-arrow {
+    transform: rotate(180deg);
+}
+
+.multi-select-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    min-width: 220px;
+    background: #181818;
+    border: 1px solid #3a3a3a;
+    border-top: 2px solid var(--netflix-red);
+    border-radius: 8px;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.85);
+    z-index: 60;
+    overflow: hidden;
+}
+
+.multi-select-dropdown.open .multi-select-menu {
+    display: block;
+}
+
+.multi-select-menu-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: #121212;
+    border-bottom: 1px solid #2b2b2b;
+    font-size: 0.76rem;
+    color: var(--text-muted);
+}
+
+.btn-clear-genre {
+    background: transparent;
+    border: none;
+    color: var(--imdb-gold);
+    font-size: 0.76rem;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 2px 4px;
+}
+
+.btn-clear-genre:hover {
+    text-decoration: underline;
+}
+
+.multi-select-options {
+    max-height: 245px;
+    overflow-y: auto;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.multi-select-options::-webkit-scrollbar {
+    width: 7px;
+}
+
+.multi-select-options::-webkit-scrollbar-track {
+    background: #141414;
+}
+
+.multi-select-options::-webkit-scrollbar-thumb {
+    background: #3a3a3a;
+    border-radius: 999px;
+}
+
+.multi-select-options::-webkit-scrollbar-thumb:hover {
+    background: var(--netflix-red);
+}
+
+.multi-select-option {
+    display: flex !important;
+    align-items: center;
+    gap: 9px;
+    padding: 7px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: #e5e7eb;
+    margin: 0 !important;
+    user-select: none;
+    transition: background 0.15s;
+}
+
+.multi-select-option:hover {
+    background: #262626;
+}
+
+.multi-select-option input[type="checkbox"] {
+    width: 16px !important;
+    height: 16px !important;
+    min-height: 16px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    accent-color: var(--netflix-red);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+/* ==========================================
+   CUSTOM SINGLE-SELECT DROPDOWN (/cari)
+   ========================================== */
+.dropdown-trigger-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.single-select-menu {
+    min-width: 100%;
+}
+
+.menu-align-right {
+    left: auto;
+    right: 0;
+}
+
+.single-select-option {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: #e5e7eb;
+    font-size: 0.85rem;
+    font-family: inherit;
+    padding: 8px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    text-align: left;
+    transition: background 0.15s, color 0.15s;
+}
+
+.single-select-option:hover {
+    background: #262626;
+    color: #ffffff;
+}
+
+.single-select-option .single-check {
+    opacity: 0;
+    color: var(--netflix-red);
+    font-weight: 800;
+    font-size: 0.88rem;
+}
+
+.single-select-option.active {
+    background: rgba(229, 9, 20, 0.14);
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.single-select-option.active .single-check {
+    opacity: 1;
+}
+
+/* Pemisah tegas antara panel filter dan grid katalog film */
+.filter-panel-card {
+    margin-bottom: 28px;
+}
+
+.filter-panel-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid #2b2b2b;
+}
+
+/* ==========================================
+   HERO TUNGGAL & RINGKASAN PROFIL BAWAH (/untuk-anda)
+   ========================================== */
+.hero-flex.hero-flex-single {
+    grid-template-columns: 1fr;
+    max-width: 860px;
+}
+
+.profile-summary-wide-card {
+    background: #161616;
+    border: 1px solid #2e2e2e;
+    border-top: 2px solid var(--netflix-red);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+}
+
+.profile-summary-header {
+    margin-bottom: 16px;
+}
+
+.profile-summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.65fr;
+    gap: 18px;
+    align-items: stretch;
+}
+
+.top-picks-dual-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+}
+
+.top-pick-card {
+    margin-top: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 16px 18px;
+}
+
+.top-pick-card.top-pick-overview {
+    border-left-color: var(--imdb-gold);
+}
+
+.top-pick-tag {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.top-pick-tag.tag-fav {
+    color: var(--green-match);
+}
+
+.top-pick-tag.tag-overview {
+    color: var(--imdb-gold);
+}
+
+.top-pick-title {
+    font-size: 1.08rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 5px;
+    line-height: 1.3;
+}
+
+.top-pick-meta {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.45;
+}
+
+.top-pick-empty {
+    font-size: 0.8rem;
+    color: #cbd5e1;
+    line-height: 1.5;
+}
+
+@media (max-width: 960px) {
+    .profile-summary-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .top-picks-dual-grid {
+        grid-template-columns: 1fr;
+    }
+}
